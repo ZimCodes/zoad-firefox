@@ -30,9 +30,9 @@ function removeFirefox(storage){
     const logoTag = document.querySelector(".logo-and-wordmark .logo");
     const textTag = document.querySelector(".logo-and-wordmark .wordmark");
     const searchTag = document.querySelector(".search-inner-wrapper");
-    logoTag.style.display = storage.logo||!Object.keys(storage).includes("logo") ? "none": "inline-block";
-    textTag.style.display = storage.textLogo||!Object.keys(storage).includes("textLogo") ? "none": "inline-block";
-    searchTag.style.display = storage.searchbar||!Object.keys(storage).includes("searchbar") ? "none":"flex";
+    logoTag.style.display = storage.logo && Object.keys(storage).includes("logo") ? "none":"inline-block";
+    textTag.style.display = storage.textLogo && Object.keys(storage).includes("textLogo") ? "none":"inline-block";
+    searchTag.style.display = storage.searchbar && Object.keys(storage).includes("searchbar") ? "none":"flex";
 
 }
 function playSound(storage){

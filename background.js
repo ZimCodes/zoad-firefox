@@ -28,6 +28,7 @@ function setThemeForAllNewTabs(){
 				tab.url.includes("about:privatebrowsing")
 				||tab.url.includes("about:home")
 				||tab.url.includes("about:newtab")
+				||tab.url.includes("about:blank")
 				||tab.url.includes(browser.runtime.getURL(HOME_URL))
 			);
 				if(newTabs.length > 0){

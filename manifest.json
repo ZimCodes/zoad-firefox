@@ -2,7 +2,7 @@
 	"name":"Zoad",
 	"short_name":"Zoad",
 	"description":"A custom theme loader for your Firefox homepage.",
-	"version":"0.0.2",
+	"version":"0.1.3",
 	"manifest_version": 2,
 	"permissions": [
 		"theme",
