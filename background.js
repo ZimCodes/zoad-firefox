@@ -41,29 +41,32 @@ function setThemeForAllNewTabs(){
 				}
 		});
 }
-function getImageSrc(msg){
+function updateStorage(msg){
 	browser.storage.local.get()
 		.then((storage)=>{
 			for(const prop in msg){
 				if(msg[prop] !== undefined && storage[prop] !== msg[prop]){
-					if(prop === "imageURL" || prop === "soundFX")
-					{
-						URL.revokeObjectURL(msg[prop]);
-						let newObj = [
-							[prop,msg[prop]]
-						];
-						browser.storage.local.set(Object.fromEntries(newObj));
-						setThemeForAllNewTabs();
+
+					if(storage[prop] !== undefined && prop === "imageURL" || prop === "soundFX"){
+						URL.revokeObjectURL(storage[prop]);
 					}
-					else{
-						const newArr = [
-							[prop,msg[prop]]
-						];
-						browser.storage.local.set(Object.fromEntries(newArr));
+
+					let newObj = [
+						[prop,msg[prop]]
+					];
+
+					browser.storage.local.set(Object.fromEntries(newObj));
+					if(prop === "imageURL" || prop === "soundFX"){
+						setThemeForAllNewTabs();
 					}
 				}
 			}
 		});
+}
+function getProperties(msg){
+	if(!msg.refresh){
+		updateStorage(msg)
+	}
 	reloadTabs();
 }
 function reloadTabs(){
@@ -75,5 +78,5 @@ function reloadTabs(){
 		});
 }
 /*---Event Listeners---*/
-browser.runtime.onMessage.addListener(getImageSrc);
+browser.runtime.onMessage.addListener(getProperties);
 browser.tabs.onCreated.addListener(newTabPage);
