@@ -7,27 +7,24 @@ const searchInput = document.querySelector("#searchbar");
 const sizeInput = document.querySelectorAll("input[name='size']");
 const soundInput = document.querySelector("#soundFX");
 const clearBtns = document.querySelectorAll("button[name='clear']");
-
+/*Update the homepage*/
 function updateHomepage(e){
     switch (e.target.name){
         case 'theme':
             const themeFile = e.target.files[0];
+            e.target.style.color = "initial";
             themeFile.text()
                 .then((content)=>{
                     const json = JSON.parse(content);
-                    browser.theme.update(
-                        json
-                    )
+                    browser.storage.local.set({saveThemeFile:json});
+                    setTheme(json);
                 });
             break;
         case 'background':
-            const imageFile = e.target.files[0];
-            e.target.style.color = "initial";
-            browser.runtime.sendMessage({imageURL: URL.createObjectURL(imageFile)});
+            setFileBlobs(e,{imageURL:"",saveImageFile:""});
             break;
         case 'background-color':
-            const color = e.target.value;
-            browser.runtime.sendMessage({bgColor:color});
+            browser.runtime.sendMessage({bgColor:e.target.value});
             break;
         case 'logo':
             browser.runtime.sendMessage({logo:e.target.checked});
@@ -42,12 +39,23 @@ function updateHomepage(e){
             browser.runtime.sendMessage({size:e.target.value});
             break;
         case'soundFX':
-            const soundFile = e.target.files[0];
-            e.target.style.color = "initial";
-            browser.runtime.sendMessage({soundURL:URL.createObjectURL(soundFile)});
+            setFileBlobs(e,{soundURL:"",saveSoundFile:""});
             break;
     }
 }
+/*Apply the theme for the browser window*/
+function setTheme(json){
+    browser.theme.update(
+        json
+    )
+}
+/*Set the File Blob pairs, for saving and for using*/
+function setFileBlobs(e,fileStorage){
+    const file = e.target.files[0];
+    e.target.style.color = "initial";//show file name in options page
+    browser.runtime.sendMessage(getFileBlobs(file,fileStorage));
+}
+/*OnClick remove the entered file*/
 function resetFile(e){
     switch(e.target.value){
         case 'theme':
@@ -72,21 +80,49 @@ function resetFile(e){
     }
     document.querySelector(`#${e.target.value}`).style.color = "transparent";
 }
+/*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["searchbar","textLogo","logo","bgColor"])
+    browser.storage.local.get(["searchbar","textLogo","logo","bgColor","saveImageFile","saveSoundFile","saveThemeFile"])
         .then((storage)=>{
-            backgroundColorInput.value = storage.bgColor;
-            textLogoInput.checked = storage.textLogo;
-            logoInput.checked = storage.logo;
-            searchInput.checked = storage.searchbar;
-            for(const size of sizeInput){
-                if(size.value === storage.size){
-                    size.checked = true;
-                }
+            //Reapply previous settings to options page
+            backgroundColorInput.value = storage.bgColor;//set background color
+            textLogoInput.checked = storage.textLogo;//set textlogo
+            logoInput.checked = storage.logo;//set logo
+            searchInput.checked = storage.searchbar;//set searchbar
+            if(storage.saveImageFile){
+                browser.storage.local.set(getFileBlobs(storage.saveImageFile,{imageURL:"", saveImageFile:""}));
             }
+            if(storage.saveSoundFile){
+                browser.storage.local.set(getFileBlobs(storage.saveSoundFile,{soundURL:"", saveSoundFile:""}));
+            }
+            if(storage.saveThemeFile){
+                setTheme(storage.saveThemeFile);
+            }
+
         });
 }
+/*Get a copy of the file blob & URL*/
+function getFileBlobs(file,fileStorage){
+    if(file){
+        const saveImageFile = new File([file], file.name,
+            {
+                type:file.type,
+                lastModified:file.lastModified
+            });
+
+        for(let prop in fileStorage){
+            if(prop.includes("URL")){
+                fileStorage[prop] = URL.createObjectURL(saveImageFile);
+            }else{
+                fileStorage[prop] = saveImageFile;
+            }
+        }
+        return fileStorage;
+    }
+}
 initOptions();
+
+/*---Event Listeners---*/
 themeInput.addEventListener('change',updateHomepage,true);
 backgroundInput.addEventListener('change',updateHomepage,true);
 backgroundColorInput.addEventListener('change',updateHomepage,true);

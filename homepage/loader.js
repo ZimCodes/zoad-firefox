@@ -1,8 +1,5 @@
-function updateHomepage(){
-    modifyImage();
-}
-/*Adds Waifu to custom New Tab Page*/
-function modifyImage(){
+/*Apply the settings to the homepage*/
+function applySettings(){
    browser.storage.local.get()
        .then((storage)=>{
            const imageURLProp = storage.imageURL ? "url("+storage.imageURL+")" : "";
@@ -26,6 +23,7 @@ function modifyImage(){
             removeFirefox(storage);
        });
 }
+/*Removes the firefox assets from the homepage*/
 function removeFirefox(storage){
     const logoTag = document.querySelector(".logo-and-wordmark .logo");
     const textTag = document.querySelector(".logo-and-wordmark .wordmark");
@@ -35,6 +33,7 @@ function removeFirefox(storage){
     searchTag.style.display = storage.searchbar && Object.keys(storage).includes("searchbar") ? "none":"flex";
 
 }
+/*Play the sound effect*/
 function playSound(storage){
     let audioTag = document.createElement("audio");
     audioTag.src = storage.soundURL;
@@ -42,9 +41,11 @@ function playSound(storage){
     document.body.append(audioTag);
     audioTag.addEventListener('ended',endSound,true);
 }
+/*Cleans up the completed sound effect*/
 function endSound(e){
     e.target.removeEventListener('ended',endSound,true);
     e.target.parentNode.removeChild(e.target);
 }
-updateHomepage();
+
+applySettings();
 

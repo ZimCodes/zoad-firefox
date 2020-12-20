@@ -1,6 +1,9 @@
 /// Local Storage to hold global variables
 const HOME_URL = "/homepage/index.html";
-/*Creates the 'New Tab Page'*/
+const tabProps = {
+	properties:["status"]
+};
+/*Creates the 'Zoad Tab Page'*/
 function setPage(tabID){
 	browser.tabs.update(
 		tabID,
@@ -11,24 +14,31 @@ function setPage(tabID){
 		}
 	);
 }
-/*Replaces the original 'New Tab' pages with a custom themed one (Waifu Tab)*/
-function newTabPage(tab){
+/*Determine if created tab is a Firefox New Tab*/
+function newTabCreated(tab){
 	const pagesToEffect = tab.url.includes("about:privatebrowsing")
 	||tab.url.includes("about:home")
 	||tab.url.includes("about:newtab");
 	if(pagesToEffect){
 		setPage(tab.id);
 	}
+}/*Determine if updated tab is a Firefox New Tab*/
+function newTabUpdated(tabID,changeInfo,tab){
+	const pagesToEffect = tab.url.includes("about:privatebrowsing")
+		||tab.url.includes("about:home")
+		||tab.url.includes("about:newtab");
+	if(pagesToEffect){
+		setPage(tabID);
+	}
 }
-/*Replace all Firefox's New Tabs with a Waifu Tab*/
-function setThemeForAllNewTabs(){
+/*Replace all Firefox's New Tabs with a Zoad Tab*/
+function loadAllNewTabs(){
 	browser.tabs.query({})
 		.then((tabs)=>{
 			const newTabs = tabs.filter(tab =>
 				tab.url.includes("about:privatebrowsing")
 				||tab.url.includes("about:home")
 				||tab.url.includes("about:newtab")
-				||tab.url.includes("about:blank")
 				||tab.url.includes(browser.runtime.getURL(HOME_URL))
 			);
 				if(newTabs.length > 0){
@@ -42,13 +52,14 @@ function setThemeForAllNewTabs(){
 				}
 		});
 }
+/*Updates the settings from the options page to the local storage*/
 function updateStorage(msg){
 	browser.storage.local.get()
 		.then((storage)=>{
 			for(const prop in msg){
 				if(msg[prop] !== undefined && storage[prop] !== msg[prop]){
 
-					if(storage[prop] !== undefined && prop === "imageURL" || prop === "soundFX"){
+					if(storage[prop] !== undefined && (prop === "imageURL" || prop === "soundFX")){
 						URL.revokeObjectURL(storage[prop]);
 					}
 
@@ -58,18 +69,20 @@ function updateStorage(msg){
 
 					browser.storage.local.set(Object.fromEntries(newObj));
 					if(prop === "imageURL" || prop === "soundFX"){
-						setThemeForAllNewTabs();
+						loadAllNewTabs();
 					}
 				}
 			}
 		});
 }
+/*Retrieves the settings from the options page*/
 function getProperties(msg){
 	if(!msg.refresh){
 		updateStorage(msg)
 	}
 	reloadTabs();
 }
+/*Apply new setting changes to all Zoad Tabs*/
 function reloadTabs(){
 	browser.tabs.query({title:"Zoad Tab"})
 		.then((tabs)=>{
@@ -80,4 +93,5 @@ function reloadTabs(){
 }
 /*---Event Listeners---*/
 browser.runtime.onMessage.addListener(getProperties);
-browser.tabs.onCreated.addListener(newTabPage);
+browser.tabs.onCreated.addListener(newTabCreated);
+browser.tabs.onUpdated.addListener(newTabUpdated,tabProps);
