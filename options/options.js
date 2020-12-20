@@ -39,7 +39,7 @@ function updateHomepage(e){
             browser.runtime.sendMessage({size:e.target.value});
             break;
         case'soundFX':
-            setFileBlobs(e,{soundURL:"",saveSoundFile:""});
+            setFileBlobsMultiple(e,{soundURLs:[],saveSoundFiles:[]});
             break;
     }
 }
@@ -54,6 +54,53 @@ function setFileBlobs(e,fileStorage){
     const file = e.target.files[0];
     e.target.style.color = "initial";//show file name in options page
     browser.runtime.sendMessage(getFileBlobs(file,fileStorage));
+}
+/*Set the File Blobs' pairs for saving and using with multiple files*/
+function setFileBlobsMultiple(e,fileStorage){
+    const fileList = e.target.files;
+    e.target.style.color = "initial";//show file name in options page
+    browser.runtime.sendMessage(getFileBlobsMultiple(fileList,fileStorage));
+}
+/*Get a copy of the file blob & URL*/
+function getFileBlobs(file,fileStorage){
+    if(file){
+        const saveFile = new File([file], file.name,
+            {
+                type:file.type,
+                lastModified:file.lastModified
+            });
+
+        for(let prop in fileStorage){
+            if(prop.includes("URL")){
+                fileStorage[prop] = URL.createObjectURL(saveFile);
+            }else{
+                fileStorage[prop] = saveFile;
+            }
+        }
+        return fileStorage;
+    }
+}
+/*Get a copy of the file blob & URL*/
+function getFileBlobsMultiple(fileList,fileStorage){
+    if(fileList){
+        for(let file of fileList){
+            const saveFile = new File([file], file.name,
+                {
+                    type:file.type,
+                    lastModified:file.lastModified
+                });
+
+            for(let prop in fileStorage){
+                if(prop.includes("URLs")){
+                    fileStorage[prop].push(URL.createObjectURL(saveFile));
+                }else{
+                    fileStorage[prop].push(saveFile);
+                }
+            }
+        }
+
+        return fileStorage;
+    }
 }
 /*OnClick remove the entered file*/
 function resetFile(e){
@@ -70,10 +117,12 @@ function resetFile(e){
                 });
             break;
         case 'soundFX':
-            browser.storage.local.get("soundURL")
-                .then((url)=>{
-                    URL.revokeObjectURL(url);
-                    browser.storage.local.set({soundURL:undefined});
+            browser.storage.local.get("soundURLs")
+                .then((storage)=>{
+                    for(let url of storage.soundURLs){
+                        URL.revokeObjectURL(url);
+                    }
+                    browser.storage.local.set({soundURLs:undefined,saveSoundFiles:undefined});
                     browser.runtime.sendMessage({refresh:true});
                 });
             break;
@@ -82,7 +131,7 @@ function resetFile(e){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["searchbar","textLogo","logo","bgColor","saveImageFile","saveSoundFile","saveThemeFile"])
+    browser.storage.local.get(["searchbar","textLogo","logo","bgColor","saveImageFile","saveSoundFiles","saveThemeFile"])
         .then((storage)=>{
             //Reapply previous settings to options page
             backgroundColorInput.value = storage.bgColor;//set background color
@@ -91,34 +140,17 @@ function initOptions(){
             searchInput.checked = storage.searchbar;//set searchbar
             if(storage.saveImageFile){
                 browser.storage.local.set(getFileBlobs(storage.saveImageFile,{imageURL:"", saveImageFile:""}));
+                backgroundInput.style.color = "initial";
             }
-            if(storage.saveSoundFile){
-                browser.storage.local.set(getFileBlobs(storage.saveSoundFile,{soundURL:"", saveSoundFile:""}));
+            if(storage.saveSoundFiles){
+                browser.storage.local.set(getFileBlobsMultiple(storage.saveSoundFiles,{soundURLs:[], saveSoundFiles:[]}));
+                soundInput.style.color = "initial";
             }
             if(storage.saveThemeFile){
                 setTheme(storage.saveThemeFile);
             }
 
         });
-}
-/*Get a copy of the file blob & URL*/
-function getFileBlobs(file,fileStorage){
-    if(file){
-        const saveImageFile = new File([file], file.name,
-            {
-                type:file.type,
-                lastModified:file.lastModified
-            });
-
-        for(let prop in fileStorage){
-            if(prop.includes("URL")){
-                fileStorage[prop] = URL.createObjectURL(saveImageFile);
-            }else{
-                fileStorage[prop] = saveImageFile;
-            }
-        }
-        return fileStorage;
-    }
 }
 initOptions();
 

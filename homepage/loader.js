@@ -36,7 +36,9 @@ function removeFirefox(storage){
 /*Play the sound effect*/
 function playSound(storage){
     let audioTag = document.createElement("audio");
-    audioTag.src = storage.soundURL;
+    if(storage.soundURLs){
+        audioTag.src = getSoundEffect(storage);
+    }
     audioTag.setAttribute("autoplay","true");
     document.body.append(audioTag);
     audioTag.addEventListener('ended',endSound,true);
@@ -46,6 +48,18 @@ function endSound(e){
     e.target.removeEventListener('ended',endSound,true);
     e.target.parentNode.removeChild(e.target);
 }
-
+/*Get random integer (exclusive)*/
+function getRandom(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+function getSoundEffect(storage){
+    if(storage.soundURLs.length > 1){
+        let index = getRandom(0,storage.soundURLs.length);
+        return storage.soundURLs[index];
+    }
+    return storage.soundURLs[0];
+}
 applySettings();
 

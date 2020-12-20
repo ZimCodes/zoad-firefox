@@ -59,16 +59,20 @@ function updateStorage(msg){
 			for(const prop in msg){
 				if(msg[prop] !== undefined && storage[prop] !== msg[prop]){
 
-					if(storage[prop] !== undefined && (prop === "imageURL" || prop === "soundFX")){
+					if(storage[prop] !== undefined && (prop === "imageURL")){
 						URL.revokeObjectURL(storage[prop]);
 					}
-
+					if(storage[prop] !== undefined && prop === "soundURLs"){
+						for(let url of storage[prop]){
+							URL.revokeObjectURL(url);
+						}
+					}
 					let newObj = [
 						[prop,msg[prop]]
 					];
 
 					browser.storage.local.set(Object.fromEntries(newObj));
-					if(prop === "imageURL" || prop === "soundFX"){
+					if(prop === "imageURL" || prop === "soundURLs"){
 						loadAllNewTabs();
 					}
 				}
