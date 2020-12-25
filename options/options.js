@@ -33,6 +33,7 @@ function updateHomepage(e){
             browser.runtime.sendMessage({textLogo:e.target.checked});
             break;
         case 'searchbar':
+            console.log("No Searchbar: "+e.target.checked);
             browser.runtime.sendMessage({searchbar:e.target.checked});
             break;
         case 'size':
@@ -112,7 +113,7 @@ function resetFile(e){
             browser.storage.local.get("imageURL")
                 .then((url)=>{
                     URL.revokeObjectURL(url);
-                    browser.storage.local.set({imageURL:undefined});
+                    browser.storage.local.set({imageURL:undefined,saveImageFile:undefined});
                     browser.runtime.sendMessage({refresh:true});
                 });
             break;
@@ -140,11 +141,11 @@ function initOptions(){
             searchInput.checked = storage.searchbar;//set searchbar
             if(storage.saveImageFile){
                 browser.storage.local.set(getFileBlobs(storage.saveImageFile,{imageURL:"", saveImageFile:""}));
-                backgroundInput.style.color = "initial";
+                //backgroundInput.style.color = "initial";
             }
             if(storage.saveSoundFiles){
                 browser.storage.local.set(getFileBlobsMultiple(storage.saveSoundFiles,{soundURLs:[], saveSoundFiles:[]}));
-                soundInput.style.color = "initial";
+                //soundInput.style.color = "initial";
             }
             if(storage.saveThemeFile){
                 setTheme(storage.saveThemeFile);

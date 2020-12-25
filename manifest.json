@@ -2,7 +2,7 @@
 	"name":"Zoad",
 	"short_name":"Zoad",
 	"description":"A custom theme loader for your Firefox homepage.",
-	"version":"0.3.0",
+	"version":"0.4.0",
 	"manifest_version": 2,
 	"permissions": [
 		"theme",
@@ -17,6 +17,9 @@
 	
 	"background":{
 		"scripts":["background.js"]
+	},
+	"chrome_url_overrides": {
+		"newtab": "homepage/index.html"
 	},
 	"chrome_settings_overrides": {
 		"homepage": "homepage/index.html"
