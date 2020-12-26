@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<script src="options.js" defer></script>
 	<link rel="stylesheet" href="options.css">
+	<title>Zoad: Options</title>
 </head>
 <body>
 	<form enctype="multipart/form-data">
@@ -16,58 +17,39 @@
 				<p><em>*JSON file to load as your custom browser theme.</em></p>
 			</section>
 			<section>
-				<label for="background-color">Background Color:</label>
-				<input id="background-color" name="background-color" type="color" value="#ffffff">
-				<p><em>*Background color of the homepage.</em></p>
+				<label for="doc">HTML:</label>
+				<input id="doc" class="file" name="doc" type="file" accept="text/html"/>
+				<button name="clear" type="button" value="doc">Clear</button>
+				<p><em>*The HTML document to load. <strong>Only body is loaded!</strong></em></p>
 			</section>
-			<fieldset>
-				<legend>Firefox</legend>
-				<section>
-					<label for="logo">No Logo:</label>
-					<input id="logo" name="logo" type="checkbox">
-					<p><em>*Removes Firefox logo.</em></p>
-				</section>
-				<section>
-					<label for="text-logo">No Title:</label>
-					<input id="text-logo" name="text-logo" type="checkbox">
-					<p><em>*Removes Firefox text logo.</em></p>
-				</section>
-				<section>
-					<label for="searchbar">No Search Bar:</label>
-					<input id="searchbar" name="searchbar" type="checkbox">
-					<p><em>*Removes Search Bar.</em></p>
-				</section>
-			</fieldset>
-
-		</fieldset>
-
-		<fieldset>
-			<legend>File Addons</legend>
 			<section>
-				<label for="background">Image:</label>
-				<input id="background" class="file" name="background" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp"/>
-				<button name="clear" type="button" value="background">Clear</button>
+				<label for="css">Stylesheets:</label>
+				<input id="css" class="file" name="css" type="file" accept="text/css" multiple/>
+				<button name="clear" type="button" value="css">Clear</button>
+				<p><em>*The CSS stylesheets to load with HTML document.</em></p>
+			</section>
+			<section>
+				<label for="images">Images:</label>
+				<input id="images" class="file" name="images" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp" multiple/>
+				<button name="clear" type="button" value="images">Clear</button>
 				<p><em>*The image show as the background.</em></p>
 			</section>
 			<fieldset>
-				<legend>Image Constraint</legend>
+				<legend>Sound Configurations</legend>
 				<section>
-					<label for="cover">Cover</label>
-					<input id="cover" name="size" type="radio" value="cover" checked>
-					<label for="contain">Contain</label>
-					<input id="contain" name="size" type="radio" value="contain">
-					<label for="auto">Auto</label>
-					<input id="auto" name="size" type="radio" value="auto">
+					<label for="soundFX">Sound Effects:</label>
+					<input id="soundFX" class="file" name="soundFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
+					<button name="clear" type="button" value="soundFX">Clear</button>
+					<p><em>*The sound effects to randomly play when opening a new tab.</em></p>
+				</section>
+				<section>
+					<label for="interval">Interval:</label>
+					<input id="interval" class="interval" name="interval" min="1" type="number">
+					<p><em>*Play a random sound effect every 'x' new tabs.</em></p>
 				</section>
 			</fieldset>
-			<section id="soundFX-container">
-				<label for="soundFX">Sound Effect:</label>
-				<input id="soundFX" class="file" name="soundFX" type="file" accept="audio/aac,audio/mpeg,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
-				<button name="clear" type="button" value="soundFX">Clear</button>
-				<p><em>*The sound effect(s) to randomly play when opening a new tab.</em></p>
-			</section>
-		</fieldset>
 
+		</fieldset>
 	</form>
 </body>
 </html>

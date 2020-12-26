@@ -2,7 +2,6 @@ section{
     display:flex;
     flex-flow:row wrap;
     flex-direction: row;
-
 }
 input{
     flex: 6;
@@ -21,14 +20,9 @@ button[name=clear]{
     flex:3;
     color:transparent;
 }
-#background-color{
-    flex:1 10px;
-}
-#background-color + p{
-    text-align: right;
-}
-#soundFX-container{
-    margin-top:15px;
+.interval{
+    flex:3;
+    height:30px;
 }
 p{
     flex:6;

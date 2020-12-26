@@ -1,20 +1,23 @@
 {
-	"name":"Zoad",
+	"name":"Zoad: Custom Loader",
 	"short_name":"Zoad",
 	"description":"A custom theme loader for your Firefox homepage.",
-	"version":"0.4.0",
+	"developer": {
+		"name": "ZimCodes",
+		"homepage_url": "https://github.com/ZimCodes/zoad-firefox"
+	},
+	"version":"1.0.0",
 	"manifest_version": 2,
 	"permissions": [
 		"theme",
 		"activeTab",
 		"tabs",
-		"search",
+		"unlimitedStorage",
 		"storage"
 	],
 	"options_ui":{
 		"page":"options/index.html"
 	},
-	
 	"background":{
 		"scripts":["background.js"]
 	},
@@ -23,6 +26,10 @@
 	},
 	"chrome_settings_overrides": {
 		"homepage": "homepage/index.html"
+	},
+	"browser_specific_settings": {
+		"gecko": {
+			"strict_min_version": "57"
+		}
 	}
-
 }

@@ -1,12 +1,4 @@
-const themeInput = document.querySelector("#theme");
-const backgroundInput = document.querySelector("#background");
-const backgroundColorInput = document.querySelector("#background-color");
-const textLogoInput = document.querySelector("#text-logo");
-const logoInput = document.querySelector("#logo");
-const searchInput = document.querySelector("#searchbar");
-const sizeInput = document.querySelectorAll("input[name='size']");
-const soundInput = document.querySelector("#soundFX");
-const clearBtns = document.querySelectorAll("button[name='clear']");
+
 /*Update the homepage*/
 function updateHomepage(e){
     switch (e.target.name){
@@ -20,29 +12,14 @@ function updateHomepage(e){
                     setTheme(json);
                 });
             break;
-        case 'background':
-            setFileBlobs(e,{imageURL:"",saveImageFile:""});
+        case 'interval':
+            browser.runtime.sendMessage({maxInterval:e.target.value});
             break;
-        case 'background-color':
-            browser.runtime.sendMessage({bgColor:e.target.value});
-            break;
-        case 'logo':
-            browser.runtime.sendMessage({logo:e.target.checked});
-            break;
-        case 'text-logo':
-            browser.runtime.sendMessage({textLogo:e.target.checked});
-            break;
-        case 'searchbar':
-            console.log("No Searchbar: "+e.target.checked);
-            browser.runtime.sendMessage({searchbar:e.target.checked});
-            break;
-        case 'size':
-            browser.runtime.sendMessage({size:e.target.value});
-            break;
-        case'soundFX':
-            setFileBlobsMultiple(e,{soundURLs:[],saveSoundFiles:[]});
+        default:
+            setFileBlobs(e);
             break;
     }
+
 }
 /*Apply the theme for the browser window*/
 function setTheme(json){
@@ -51,80 +28,49 @@ function setTheme(json){
     )
 }
 /*Set the File Blob pairs, for saving and for using*/
-function setFileBlobs(e,fileStorage){
-    const file = e.target.files[0];
+function setFileBlobs(e){
+    const files = e.target.files;
     e.target.style.color = "initial";//show file name in options page
-    browser.runtime.sendMessage(getFileBlobs(file,fileStorage));
+    browser.runtime.sendMessage(getFileBlobs(e.target.name,files));
 }
-/*Set the File Blobs' pairs for saving and using with multiple files*/
-function setFileBlobsMultiple(e,fileStorage){
-    const fileList = e.target.files;
-    e.target.style.color = "initial";//show file name in options page
-    browser.runtime.sendMessage(getFileBlobsMultiple(fileList,fileStorage));
-}
-/*Get a copy of the file blob & URL*/
-function getFileBlobs(file,fileStorage){
-    if(file){
-        const saveFile = new File([file], file.name,
-            {
-                type:file.type,
-                lastModified:file.lastModified
-            });
-
-        for(let prop in fileStorage){
-            if(prop.includes("URL")){
-                fileStorage[prop] = URL.createObjectURL(saveFile);
-            }else{
-                fileStorage[prop] = saveFile;
-            }
-        }
-        return fileStorage;
-    }
-}
-/*Get a copy of the file blob & URL*/
-function getFileBlobsMultiple(fileList,fileStorage){
-    if(fileList){
-        for(let file of fileList){
-            const saveFile = new File([file], file.name,
+/*Get a copy of the file blobs & URLs*/
+function getFileBlobs(storageName,filelist){
+    if(filelist){
+        let saveFiles = [];
+        let saveURLs = [];
+        let fileMap = new Map();
+        for(const file of filelist){
+            const saveFile = new File([file],
+                file.name,
                 {
                     type:file.type,
                     lastModified:file.lastModified
                 });
-
-            for(let prop in fileStorage){
-                if(prop.includes("URLs")){
-                    fileStorage[prop].push(URL.createObjectURL(saveFile));
-                }else{
-                    fileStorage[prop].push(saveFile);
-                }
-            }
+            saveFiles.push(saveFile);
+            saveURLs.push(URL.createObjectURL(saveFile));
         }
-
-        return fileStorage;
+        fileMap.set("urls",saveURLs);
+        fileMap.set("files",saveFiles);
+        return {[storageName]: fileMap};
     }
 }
 /*OnClick remove the entered file*/
 function resetFile(e){
     switch(e.target.value){
         case 'theme':
+            browser.storage.local.set({saveThemeFile: undefined});
             browser.theme.reset();
             break;
-        case 'background':
-            browser.storage.local.get("imageURL")
-                .then((url)=>{
-                    URL.revokeObjectURL(url);
-                    browser.storage.local.set({imageURL:undefined,saveImageFile:undefined});
-                    browser.runtime.sendMessage({refresh:true});
-                });
-            break;
-        case 'soundFX':
-            browser.storage.local.get("soundURLs")
-                .then((storage)=>{
-                    for(let url of storage.soundURLs){
+        default:
+            browser.storage.local.get(e.target.value)
+                .then((saveFiles)=>{
+                    for(let url of saveFiles[e.target.value].get("urls")){
                         URL.revokeObjectURL(url);
                     }
-                    browser.storage.local.set({soundURLs:undefined,saveSoundFiles:undefined});
-                    browser.runtime.sendMessage({refresh:true});
+                    browser.storage.local.set({[e.target.value]: undefined});
+                    if(e.target.value === "soundFX"){
+                        browser.runtime.sendMessage({[e.target.value]: undefined});
+                    }
                 });
             break;
     }
@@ -132,40 +78,28 @@ function resetFile(e){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["searchbar","textLogo","logo","bgColor","saveImageFile","saveSoundFiles","saveThemeFile"])
+    browser.storage.local.get("saveThemeFile")
         .then((storage)=>{
-            //Reapply previous settings to options page
-            backgroundColorInput.value = storage.bgColor;//set background color
-            textLogoInput.checked = storage.textLogo;//set textlogo
-            logoInput.checked = storage.logo;//set logo
-            searchInput.checked = storage.searchbar;//set searchbar
-            if(storage.saveImageFile){
-                browser.storage.local.set(getFileBlobs(storage.saveImageFile,{imageURL:"", saveImageFile:""}));
-                //backgroundInput.style.color = "initial";
-            }
-            if(storage.saveSoundFiles){
-                browser.storage.local.set(getFileBlobsMultiple(storage.saveSoundFiles,{soundURLs:[], saveSoundFiles:[]}));
-                //soundInput.style.color = "initial";
-            }
+            //Reapply previous settings
             if(storage.saveThemeFile){
                 setTheme(storage.saveThemeFile);
             }
-
+            if(storage.maxInterval){
+                document.querySelector("#interval").value = storage.maxInterval;
+            }
         });
 }
 initOptions();
 
 /*---Event Listeners---*/
-themeInput.addEventListener('change',updateHomepage,true);
-backgroundInput.addEventListener('change',updateHomepage,true);
-backgroundColorInput.addEventListener('change',updateHomepage,true);
-textLogoInput.addEventListener('change',updateHomepage,true);
-logoInput.addEventListener('change',updateHomepage,true);
-searchInput.addEventListener('change',updateHomepage,true);
-for(const size of sizeInput){
-    size.addEventListener('change',updateHomepage,true);
-}
+document.querySelector("#theme").addEventListener('change',updateHomepage,true);
+document.querySelector("#doc").addEventListener('change',updateHomepage,true);
+document.querySelector("#css").addEventListener('change',updateHomepage,true);
+document.querySelector("#images").addEventListener('change',updateHomepage,true);
+document.querySelector("#soundFX").addEventListener('change',updateHomepage,true);
+document.querySelector("#interval").addEventListener('change',updateHomepage,true);
+const clearBtns = document.querySelectorAll("button[name='clear']");
 for(const btn of clearBtns){
     btn.addEventListener('click',resetFile,true);
 }
-soundInput.addEventListener('change',updateHomepage,true);
+
