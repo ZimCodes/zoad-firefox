@@ -2,7 +2,7 @@
 # zoad-firefox
 *Zoad* is a firefox extension for loading custom themes to your Firefox homepage.
 
-<div style="margin:0 auto;"><img src="./zoad-logo.svg" alt="Zoad Logo"></div>
+<div style="margin:0 auto;"><img width="50%" src="./zoad-logo.svg" alt="Zoad Logo"></div>
 
 ## Load Features
 Zoad allows you to load various files:
@@ -13,9 +13,27 @@ Zoad allows you to load various files:
 - Sound Effects
 
 ## How To Use
-**All settings are found in the options page*
+**All settings are found in the options page.*
 
-On the options page, select the file(s) you would like to load. And enjoy!
+For loading images in css using the `url()` function, it must **NOT** contain a directory in the URL.
+
+### Example:
+
+#### Invalid
+
+```css
+body{
+    background: url("flowers/myimage.png");
+}
+```
+
+#### Valid
+
+```css
+body{
+    url("myimage.png");
+}
+```
 
 ## Installation 
 
