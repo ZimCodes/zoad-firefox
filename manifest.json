@@ -4,10 +4,14 @@
 	"description":"A custom theme loader for your Firefox homepage.",
 	"developer": {
 		"name": "ZimCodes",
-		"homepage_url": "https://github.com/ZimCodes/zoad-firefox"
+		"url": "https://github.com/ZimCodes/zoad-firefox"
 	},
 	"version":"1.0.0",
 	"manifest_version": 2,
+	"icons": {
+		"48": "icons/zoad-logo.png",
+		"96": "icons/zoad-logo@2x.png"
+	},
 	"permissions": [
 		"theme",
 		"activeTab",

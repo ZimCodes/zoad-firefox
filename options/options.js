@@ -97,7 +97,7 @@ document.querySelector("#doc").addEventListener('change',updateHomepage,true);
 document.querySelector("#css").addEventListener('change',updateHomepage,true);
 document.querySelector("#images").addEventListener('change',updateHomepage,true);
 document.querySelector("#soundFX").addEventListener('change',updateHomepage,true);
-document.querySelector("#interval").addEventListener('change',updateHomepage,true);
+document.querySelector("#interval").addEventListener('input',updateHomepage,true);
 const clearBtns = document.querySelectorAll("button[name='clear']");
 for(const btn of clearBtns){
     btn.addEventListener('click',resetFile,true);
