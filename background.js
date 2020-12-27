@@ -5,7 +5,7 @@ function updateStorage(msg){
 	browser.storage.local.get()
 		.then((storage)=>{
 			for(const prop in msg){
-				if(msg[prop] && prop !== "maxInterval"){
+				if(msg[prop] && prop !== "maxInterval" && prop !== "stop"){
 					cleanupURLs(storage[prop]);
 					parseDocString(msg[prop],prop);
 					if(prop === "images" || prop === "css"){
@@ -19,6 +19,9 @@ function updateStorage(msg){
 					browser.storage.local.set({[prop]:msg[prop]});
 				}else if(prop === "soundFX" && !msg[prop]){
 					playSound();
+				}else if(prop === "stop"){
+					browser.storage.local.set({onTabClose:msg[prop]});
+					setRemoveSound(msg[prop]);
 				}
 			}
 			reloadTabs();
@@ -94,27 +97,38 @@ function cleanupURLs(map){
 		}
 	}
 }
-/*Refresh the image blobs and their URLs*/
-function refreshImages(){
-	browser.storage.local.get(["css","images"])
+/*Initialize file blobs & event listeners*/
+function initContent(){
+	browser.storage.local.get(["css","images","soundFX","onTabClose"])
 		.then((storage)=>{
-			if(storage.images){
-
-				const imgMap = storage.images;
-				let newURLs = [];
-				for(const file of imgMap.get("files")){
-					newURLs.push(URL.createObjectURL(file));
+			for(let [prop,value] of Object.entries(storage)){
+				if(prop === "onTabClose"){
+					setRemoveSound(value);
+				}else{
+					refreshBlobs(prop,value,storage);
 				}
-				for(const url of imgMap.get("urls")){
-					URL.revokeObjectURL(url);
-				}
-				imgMap.set("urls",newURLs);
-				browser.storage.local.set({images:imgMap});
 
-				/*Reapply new image locations to CSS files*/
-				parseCSS(imgMap,"images",storage);
 			}
 		});
+}
+/*Refresh the file blobs and their respective URLs*/
+function refreshBlobs(prop,map,storage){
+	if(map){
+		let newURLs = [];
+		for(const url of map.get("urls")){
+			URL.revokeObjectURL(url);
+		}
+		for(const file of map.get("files")){
+			newURLs.push(URL.createObjectURL(file));
+		}
+		map.set("urls",newURLs);
+		browser.storage.local.set({[prop]:map});
+
+		if(prop === "images"){
+			/*Reapply new image locations to CSS files*/
+			parseCSS(map,"images",storage);
+		}
+	}
 }
 /*Apply new setting changes to all Zoad Tabs*/
 function reloadTabs(){
@@ -148,6 +162,18 @@ function playSound(tab){
 			}
 		});
 }
+/*Set the Event listener for stopping the sound effect when a tab is closed*/
+function setRemoveSound(onTabClose){
+	if(onTabClose){
+		if(!browser.tabs.onRemoved.hasListener(stopSound)){
+			browser.tabs.onRemoved.addListener(stopSound);
+		}
+	}else{
+		if(browser.tabs.onRemoved.hasListener(stopSound)){
+			browser.tabs.onRemoved.removeListener(stopSound);
+		}
+	}
+}
 /*Cleans up the completed sound effect*/
 function endOfSound(e){
 	e.target.removeEventListener('ended',endOfSound,true);
@@ -176,8 +202,7 @@ function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 /*Initialize Functions*/
-refreshImages();
+initContent();
 /*---Event Listeners---*/
 browser.runtime.onMessage.addListener(updateStorage);
 browser.tabs.onCreated.addListener(playSound);
-browser.tabs.onRemoved.addListener(stopSound);

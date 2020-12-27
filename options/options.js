@@ -12,6 +12,9 @@ function updateHomepage(e){
                     setTheme(json);
                 });
             break;
+        case 'stop':
+            browser.runtime.sendMessage({stop:e.target.checked});
+            break;
         case 'interval':
             browser.runtime.sendMessage({maxInterval:e.target.value});
             break;
@@ -64,13 +67,16 @@ function resetFile(e){
         default:
             browser.storage.local.get(e.target.value)
                 .then((saveFiles)=>{
-                    for(let url of saveFiles[e.target.value].get("urls")){
-                        URL.revokeObjectURL(url);
+                    if(saveFiles[e.target.value]){
+                        for(let url of saveFiles[e.target.value].get("urls")){
+                            URL.revokeObjectURL(url);
+                        }
+                        browser.storage.local.set({[e.target.value]: undefined});
+                        if(e.target.value === "soundFX"){
+                            browser.runtime.sendMessage({[e.target.value]: undefined});
+                        }
                     }
-                    browser.storage.local.set({[e.target.value]: undefined});
-                    if(e.target.value === "soundFX"){
-                        browser.runtime.sendMessage({[e.target.value]: undefined});
-                    }
+
                 });
             break;
     }
@@ -78,7 +84,7 @@ function resetFile(e){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get("saveThemeFile")
+    browser.storage.local.get(["saveThemeFile","onTabClose"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.saveThemeFile){
@@ -86,6 +92,9 @@ function initOptions(){
             }
             if(storage.maxInterval){
                 document.querySelector("#interval").value = storage.maxInterval;
+            }
+            if(storage.onTabClose){
+                document.querySelector("#stop").checked = storage.onTabClose;
             }
         });
 }
@@ -98,6 +107,7 @@ document.querySelector("#css").addEventListener('change',updateHomepage,true);
 document.querySelector("#images").addEventListener('change',updateHomepage,true);
 document.querySelector("#soundFX").addEventListener('change',updateHomepage,true);
 document.querySelector("#interval").addEventListener('input',updateHomepage,true);
+document.querySelector("#stop").addEventListener('change',updateHomepage,true);
 const clearBtns = document.querySelectorAll("button[name='clear']");
 for(const btn of clearBtns){
     btn.addEventListener('click',resetFile,true);
