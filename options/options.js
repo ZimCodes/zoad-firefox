@@ -133,7 +133,9 @@ async function loadStats(){
                     dataTxt += `${prop}: ${map.get("files").length} `;
                 }
             }
-            dataTag.innerHTML = dataTxt;
+            const txtNode = document.createTextNode(dataTxt);
+            dataTag.replaceChildren();
+            dataTag.append(txtNode);
         });
 }
 /*Initialize settings from the previous session*/
