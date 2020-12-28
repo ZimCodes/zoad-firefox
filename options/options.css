@@ -28,3 +28,10 @@ p{
     flex:6;
     text-align: right;
 }
+.info,h1{
+    text-align: center;
+    margin:8px;
+}
+h1{
+    text-decoration:underline;
+}

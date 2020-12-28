@@ -22,10 +22,26 @@ function updateStorage(msg){
 				}else if(prop === "stop"){
 					browser.storage.local.set({onTabClose:msg[prop]});
 					setRemoveSound(msg[prop]);
+				}else if(prop === "images" && !msg[prop]){
+					resetCSS(storage);
 				}
 			}
 			reloadTabs();
 		});
+}
+/*Revert the stylesheet back to its original form*/
+async function resetCSS(storage){
+	if(storage.css){
+		const cssMap = storage.css;
+		const txtArr = [];
+		cssMap.set("text",undefined);
+		for(const file of cssMap.get("files")){
+			let txt = await file.text();
+			txtArr.push(txt);
+		}
+		cssMap.set("text",txtArr);
+		browser.storage.local.set({css:cssMap});
+	}
 }
 /*Retrieve CSS file in text form*/
 async function parseCSS(docMap,prop,storage){
@@ -65,6 +81,9 @@ function replaceURLs(imagesMap,cssFile,cssText){
 	for(let i = 0; i < imagesMap.get("files").length; i++){
 		const name = imagesMap.get("files")[i].name;
 		cssText = cssText.replace(name,imagesMap.get("urls")[i]);
+	}
+	if(!imagesMap){
+		cssText = cssText.replace()
 	}
 	return cssText;
 }
@@ -107,7 +126,6 @@ function initContent(){
 				}else{
 					refreshBlobs(prop,value,storage);
 				}
-
 			}
 		});
 }

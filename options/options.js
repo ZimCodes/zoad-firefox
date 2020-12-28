@@ -2,14 +2,39 @@
 /*Update the homepage*/
 function updateHomepage(e){
     switch (e.target.name){
-        case 'theme':
-            const themeFile = e.target.files[0];
-            e.target.style.color = "initial";
-            themeFile.text()
-                .then((content)=>{
-                    const json = JSON.parse(content);
-                    browser.storage.local.set({saveThemeFile:json});
-                    setTheme(json);
+        case 'themes':
+            browser.storage.local.get("themes")
+                .then((storage)=>{
+                    let files = e.target.files;
+                    e.target.style.color = "initial";
+                    if(storage.themes){
+                        const newMap = storage.themes;
+                        for(const file of files){
+                            if(!storage.themes.get("names").includes(file.name)){
+                                file.text()
+                                    .then((content)=>{
+                                        newMap.get("names").push(file.name);
+                                        newMap.get("json").push(JSON.parse(content));
+                                        browser.storage.local.set({themes:newMap});
+                                    });
+                            }
+                        }
+                    }else{
+                        let newMap = new Map();
+                        let jsonArr = [];
+                        let nameArr = [];
+                        for(const file of files){
+                            if(!nameArr.includes(file.name)){
+                                file.text().then((content)=>{
+                                    nameArr.push(file.name);
+                                    jsonArr.push(JSON.parse(content));
+                                    newMap.set("names",nameArr);
+                                    newMap.set("json",jsonArr);
+                                    browser.storage.local.set({themes:newMap});
+                                });
+                            }
+                        }
+                    }
                 });
             break;
         case 'stop':
@@ -22,7 +47,7 @@ function updateHomepage(e){
             setFileBlobs(e);
             break;
     }
-
+    loadStats();
 }
 /*Apply the theme for the browser window*/
 function setTheme(json){
@@ -58,10 +83,10 @@ function getFileBlobs(storageName,filelist){
     }
 }
 /*OnClick remove the entered file*/
-function resetFile(e){
+async function resetFile(e){
     switch(e.target.value){
-        case 'theme':
-            browser.storage.local.set({saveThemeFile: undefined});
+        case 'themes':
+            browser.storage.local.set({themes: undefined,currentTheme:undefined});
             browser.theme.reset();
             break;
         default:
@@ -72,7 +97,7 @@ function resetFile(e){
                             URL.revokeObjectURL(url);
                         }
                         browser.storage.local.set({[e.target.value]: undefined});
-                        if(e.target.value === "soundFX"){
+                        if(e.target.value === "soundFX" || e.target.value === "images"){
                             browser.runtime.sendMessage({[e.target.value]: undefined});
                         }
                     }
@@ -81,14 +106,43 @@ function resetFile(e){
             break;
     }
     document.querySelector(`#${e.target.value}`).style.color = "transparent";
+    reloadTabs();
+    loadStats();
+}
+/*Apply new setting changes to all Zoad Tabs*/
+async function reloadTabs(){
+    browser.tabs.query({title:"New Tab"})
+        .then((tabs)=>{
+            for(let tab of tabs){
+                browser.tabs.reload(tab.id);
+            }
+        });
+}
+/*Loads the current amount of items loaded.
+* Warning: Late Updating
+* */
+async function loadStats(){
+    browser.storage.local.get(["themes","doc","css","images","soundFX"])
+        .then((storage)=>{
+            const dataTag = document.querySelector("#data");
+            let dataTxt = "";
+            for(const [prop,map] of Object.entries(storage)){
+                if(prop === "themes"){
+                    dataTxt += `${prop}: ${map.get("names").length} `;
+                }else{
+                    dataTxt += `${prop}: ${map.get("files").length} `;
+                }
+            }
+            dataTag.innerHTML = dataTxt;
+        });
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["saveThemeFile","onTabClose"])
+    browser.storage.local.get(["currentTheme","onTabClose"])
         .then((storage)=>{
             //Reapply previous settings
-            if(storage.saveThemeFile){
-                setTheme(storage.saveThemeFile);
+            if(storage.currentTheme){
+                setTheme(storage.currentTheme);
             }
             if(storage.maxInterval){
                 document.querySelector("#interval").value = storage.maxInterval;
@@ -96,12 +150,13 @@ function initOptions(){
             if(storage.onTabClose){
                 document.querySelector("#stop").checked = storage.onTabClose;
             }
+            loadStats();
         });
 }
 initOptions();
 
 /*---Event Listeners---*/
-document.querySelector("#theme").addEventListener('change',updateHomepage,true);
+document.querySelector("#themes").addEventListener('change',updateHomepage,true);
 document.querySelector("#doc").addEventListener('change',updateHomepage,true);
 document.querySelector("#css").addEventListener('change',updateHomepage,true);
 document.querySelector("#images").addEventListener('change',updateHomepage,true);

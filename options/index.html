@@ -7,13 +7,16 @@
 	<title>Zoad: Options</title>
 </head>
 <body>
+	<h1>Amount Loaded</h1>
+	<p class="info"><em>*Late updating...</em></p>
+	<p class="info" id="data"></p>
 	<form enctype="multipart/form-data">
 		<fieldset>
 			<legend>Browser Styles</legend>
 			<section>
-				<label for="theme">Theme:</label>
-				<input id="theme" class="file" name="theme" type="file" accept="application/json"/>
-				<button name="clear" type="button" value="theme">Clear</button>
+				<label for="themes">Theme:</label>
+				<input id="themes" class="file" name="themes" type="file" accept="application/json" multiple/>
+				<button name="clear" type="button" value="themes">Clear</button>
 				<p><em>*JSON file to load as your custom browser theme.</em></p>
 			</section>
 			<section>

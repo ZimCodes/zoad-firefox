@@ -19,6 +19,12 @@
 		"unlimitedStorage",
 		"storage"
 	],
+	"browser_action": {
+		"browser_style": true,
+		"default_icon": "zoad-logo.svg",
+		"default_title": "Zoad themes",
+		"default_popup": "popup/index.html"
+	},
 	"options_ui":{
 		"page":"options/index.html"
 	},
@@ -33,6 +39,7 @@
 	},
 	"browser_specific_settings": {
 		"gecko": {
+			"id": "zimcodes@pm.me",
 			"strict_min_version": "57"
 		}
 	}

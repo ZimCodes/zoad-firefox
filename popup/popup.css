@@ -1,0 +1,22 @@
+/*Global Styles*/
+* {
+    font-family: Tahoma, Arial, sans-serif;
+    text-align: center;
+}
+body{
+    background: #2b3238;
+}
+h1 {
+    /*padding: 0.15em 0;*/
+    color:goldenrod;
+    font-size: 14px;
+}
+option {
+    color: saddlebrown;
+}
+select {
+    display: block;
+    margin: 1em auto;
+    width: calc(140px + 10vw);
+    font-size: 12px;
+}
