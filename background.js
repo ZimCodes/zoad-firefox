@@ -1,5 +1,6 @@
 /*Global Variables*/
-let curInterval = 1;//The current increment for sound effect is played
+let curInterval = 0;//The current increment for sound effect is played
+let curMaxInterval = 0;//The current maxInterval before playing sound effect
 /*EVENT: Updates the settings from the options page to the local storage*/
 function updateStorage(msg){
 	browser.storage.local.get()
@@ -16,6 +17,7 @@ function updateStorage(msg){
 				}else if(prop === "maxInterval"){
 					//Initialize interval
 					curInterval = 0;
+					curMaxInterval = msg[prop] === 0 ? 0 : getRandom(msg[prop] * 0.5, (msg[prop] * 1.5) + 1);
 					browser.storage.local.set({[prop]:msg[prop]});
 				}else if(prop === "soundFX" && !msg[prop]){
 					playSound();
@@ -156,21 +158,26 @@ function reloadTabs(){
 }
 /*EVENT: Play the sound effect when a new tab has been created*/
 function playSound(tab){
-	browser.storage.local.get(["soundFX","maxInterval","currentInterval","isRandom"])
+	browser.storage.local.get(["soundFX","maxInterval"])
 		.then((storage)=>{
 			curInterval += 1;
 			stopSound();
-			/*Play a new sound effect if none is currently playing*/
+			/*Play a new sound effect if none is currently playing
+			* Or the maximum new tabs have been reached*/
 			if(storage.soundFX){
-				if(!storage.maxInterval || curInterval >= storage.maxInterval){
+				if(!storage.maxInterval || curInterval >= curMaxInterval){
 					const sfxMap = storage.soundFX;
 					const audioTag = document.createElement("audio");
 					audioTag.src = getSoundEffect(sfxMap);
 					audioTag.setAttribute("autoplay","true");
 					document.body.append(audioTag);
 					audioTag.addEventListener('ended',endOfSound,true);
-					if(curInterval !== 1){
-						curInterval = 1;
+					if(storage.maxInterval > 0){
+                        curMaxInterval = getRandom(storage.maxInterval *0.5,(storage.maxInterval *1.5) +1)
+                    }
+					/*Reset current iteration*/
+					if(curInterval !== 0){
+						curInterval = 0;
 					}
 				}
 

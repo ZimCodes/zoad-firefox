@@ -138,7 +138,7 @@ async function loadStats(){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["currentTheme","onTabClose"])
+    browser.storage.local.get(["currentTheme","onTabClose","maxInterval"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.currentTheme){

@@ -21,7 +21,7 @@ button[name=clear]{
     color:transparent;
 }
 .interval{
-    flex:3;
+    flex:1;
     height:30px;
 }
 p{
