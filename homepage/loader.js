@@ -1,3 +1,5 @@
+/*Global Variables*/
+const domParser = new DOMParser();//loads HTML document;Also replaces 'outerHTML'
 /*Apply the settings to the homepage*/
 function applySettings(){
    browser.storage.local.get()
@@ -13,7 +15,8 @@ function applySettings(){
 }
 function loadHTML(docMap){
     const bodyTag = document.body;
-    bodyTag.outerHTML = docMap.get("text");
+    const parsed = domParser.parseFromString(docMap.get("text"),"text/html");
+    document.querySelector("html").replaceChild(parsed.body,bodyTag);
 }
 function loadCSS(cssMap){
     const styleTag = document.querySelector('style');
