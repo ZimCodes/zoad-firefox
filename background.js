@@ -54,7 +54,7 @@ async function parseCSS(docMap,prop,storage){
 		for(const file of files){
 			let txt = await file.text();
 			if(storage.images){
-				textArr.push(replaceURLs(storage.images,file,txt));
+				textArr.push(replaceURLs(storage.images,txt));
 			}else{
 				textArr.push(txt);
 			}
@@ -65,7 +65,7 @@ async function parseCSS(docMap,prop,storage){
 	else if(prop === "images" && storage.css){
 		for(const file of storage.css.get("files")){
 			let txt = await file.text();
-			textArr.push(replaceURLs(docMap,file,txt));
+			textArr.push(replaceURLs(docMap,txt));
 		}
 		browser.storage.local.set({[prop]:docMap});
 		
@@ -79,12 +79,57 @@ async function parseCSS(docMap,prop,storage){
 
 }
 /*Replace links in url functions with new link from extension*/
-function replaceURLs(imagesMap,cssFile,cssText){
+function replaceURLs(imagesMap,cssText){
 	for(let i = 0; i < imagesMap.get("files").length; i++){
 		const name = imagesMap.get("files")[i].name;
-		cssText = cssText.replace(name,imagesMap.get("urls")[i]);
+		const url = imagesMap.get("urls")[i];
+		cssText = getNewCSS(name,url,cssText);
 	}
 	return cssText;
+}
+/*Get a new copy of css with the new image urls added to each url() function*/
+function getNewCSS(imageName,imageURL,cssText){
+	let content = cssText;
+	let fileLocIndex = 1;//Location of filename found inside of a url()
+	while(fileLocIndex !== -1){
+		fileLocIndex = content.indexOf(imageName);
+		if(fileLocIndex !== -1){
+			if(content[fileLocIndex - 1] === "/"){
+				const leftOpenIndex = openParenthesis(content,fileLocIndex);//open parenthesis
+				const rightCloseIndex = closeParenthesis(content,fileLocIndex);//close parenthesis
+				const url = content.slice(leftOpenIndex,rightCloseIndex);//Retrieve contents inside of url()
+				content = content.replaceAll(url,`"${imageURL}"`);//replace content with image
+			}else{
+				//Just replace image normally
+				content = content.replaceAll(imageName,imageURL);
+			}
+		}
+	}
+	return content;
+}
+//Grab the open parenthesis of url function
+function openParenthesis(content,fileLocIndex){
+	let pointer = fileLocIndex - 1;
+	while(true){
+		if(content[pointer] === '('){
+			pointer += 1;
+			break;
+		}
+		pointer -= 1;
+	}
+	return pointer;//open parenthesis
+}
+//Grab the closed parenthesis of url function
+function closeParenthesis(content,fileLocIndex){
+	let pointer = fileLocIndex;
+	while(true){
+		if(content[pointer] === ')'){
+			pointer -= 1;
+			break;
+		}
+		pointer += 1;
+	}
+	return pointer + 1;
 }
 /*Parse the HTML file and remove everything except the body*/
 function parseDocString(docMap,prop){

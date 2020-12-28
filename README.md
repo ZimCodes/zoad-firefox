@@ -12,28 +12,11 @@ Zoad allows you to load various files:
 - Images
 - Sound Effects
 
-## How To Use
+## Functionality
 **All settings are found in the options page.*
 
-For loading images in css using the `url()` function, it must **NOT** contain a directory in the URL.
-
-### Example:
-
-#### Invalid
-
-```css
-body{
-    background: url("flowers/myimage.png");
-}
-```
-
-#### Valid
-
-```css
-body{
-    url("myimage.png");
-}
-```
+### HTML
+For the HTML Document, only the `<body>` is loaded. *All tags outside of `<body>` are ignored.*
 
 ## Installation 
 

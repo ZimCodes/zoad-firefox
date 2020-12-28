@@ -23,21 +23,24 @@ function setTheme(json){
     );
 }
 /*Initialize the options in the popup menu*/
-async function initOptions(){
+function initOptions(){
     browser.storage.local.get(["themes","currentTheme"])
         .then((storage)=>{
             const selectTag = document.querySelector("#themes");
-            const optTags = [];
-            for(const fileName of storage.themes.get("names")) {
-                const displayName = fileName.replace(".json","");
-                const optTag = document.createElement("option");
-                optTag.setAttribute("value", fileName);
-                const txtNode = document.createTextNode(displayName);
-                optTag.append(txtNode);
-                optTags.push(optTag);
+            if(storage.themes){
+                const optTags = [];
+                for(const fileName of storage.themes.get("names")) {
+                    const displayName = fileName.replace(".json","");
+                    const optTag = document.createElement("option");
+                    optTag.setAttribute("value", fileName);
+                    const txtNode = document.createTextNode(displayName);
+                    optTag.append(txtNode);
+                    optTags.push(optTag);
+                }
+                optTags.sort((a,b)=> a.value.localeCompare(b.value));
+                optTags.forEach(element=>selectTag.append(element));
             }
-            optTags.sort((a,b)=> a.value.localeCompare(b.value));
-            optTags.forEach(element=>selectTag.append(element));
+
 
             if(storage.currentTheme){
                 selectTag.value = storage.currentTheme;
