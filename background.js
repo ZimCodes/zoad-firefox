@@ -82,9 +82,6 @@ function replaceURLs(imagesMap,cssFile,cssText){
 		const name = imagesMap.get("files")[i].name;
 		cssText = cssText.replace(name,imagesMap.get("urls")[i]);
 	}
-	if(!imagesMap){
-		cssText = cssText.replace()
-	}
 	return cssText;
 }
 /*Parse the HTML file and remove everything except the body*/

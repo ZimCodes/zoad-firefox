@@ -28,7 +28,7 @@ p{
     flex:6;
     text-align: right;
 }
-.info,h1{
+.info{
     text-align: center;
     margin:8px;
 }
