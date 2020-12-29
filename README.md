@@ -12,11 +12,24 @@ Zoad allows you to load various files:
 - Images
 - Sound Effects
 
-## Functionality
+## More Info
 **All settings are found in the options page.*
 
 ### HTML
 For the HTML Document, only the `<body>` is loaded. *All tags outside of `<body>` are ignored.*
+
+### Themes
+All themes added to the loader can accessed through the popup menu. 
+
+The popup menu shows all of your loaded themes conveniently in one place. You could use this menu to switch between any of your loaded themes.
+
+### CSS
+
+Zoad supports the usage of `url()`. Just load the images & Zoad will apply the appropriate links to each `url()`.
+
+### Sound Effects
+
+Zoad supports any audio the `<audio>` supports. Since the only limitation is the amount your local storage space can hold, Zoad will allow you to load any file size & amount. *Go crazy at your own risk*.
 
 ## Installation 
 
