@@ -1,6 +1,6 @@
 # Permissions
 ## Tabs/Active Tab
-- Refreshes all New tabs to load new content from options page.
+- Refreshes all _New Tab_ pages to load new content from options page.
 - Plays sound effects whenever a new tab is created.
 
 ## Theme
@@ -10,11 +10,11 @@
 - Locally stores the following:
     - All Zoad Settings found on the options page
     - Files you want loaded such as:
-        - HTML
-        - CSS
+        - HTML Document
+        - CSS Stylesheets
         - Images
         - Themes (_.json_)
         - Sound Effects(_sfx_)
     
 ## Unlimited Storage
-- Enables the ability to locally store & load multiple large files.
+- Enables the ability to locally store & load multiple files.
