@@ -29,7 +29,8 @@ Need a theme? Check out this [alternative theme pack](https://github.com/ZimCode
 
 Zoad supports the usage of `url()`. Just load the images & Zoad will apply the appropriate images to each `url()`.
 
-### Background
+### Background Options
+
 Zoad supports loading an image as a background. You can even change the background color of the homepage.
 
 ### Sound Effects
