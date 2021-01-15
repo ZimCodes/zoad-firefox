@@ -1,7 +1,8 @@
 section{
     display:flex;
     flex-flow:row wrap;
-    flex-direction: row;
+    margin-top: 10px;
+    justify-content: center;
 }
 input{
     flex: 6;
@@ -16,9 +17,16 @@ button[name=clear]{
     margin-bottom: 10px;
     border-radius: 50px;
 }
-.file{
-    flex:3;
-    color:transparent;
+/*Anchor Radio Buttons*/
+section div{
+    margin:0 25px;
+}
+input[name=repeat],input[name=anchor]{
+    flex:initial;
+    margin:0 25px;
+}
+.space{
+    margin-top:20px;
 }
 .interval{
     flex:1;

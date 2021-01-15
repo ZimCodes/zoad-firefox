@@ -23,9 +23,14 @@ All themes added to the loader can be accessed through the popup menu.
 
 The popup menu shows all of your loaded themes conveniently in one place. You could use this menu to switch between any of your loaded themes.
 
+Need a theme? Check out this [alternative theme pack](https://github.com/ZimCodes/doki-theme-firefox/tree/alt-themes) for the doki-theme-firefox edition. 
+
 ### CSS
 
-Zoad supports the usage of `url()`. Just load the images & Zoad will apply the appropriate links to each `url()`.
+Zoad supports the usage of `url()`. Just load the images & Zoad will apply the appropriate images to each `url()`.
+
+### Background
+Zoad supports loading an image as a background. You can even change the background color of the homepage.
 
 ### Sound Effects
 

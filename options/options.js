@@ -1,4 +1,3 @@
-
 /*Update the homepage*/
 function updateHomepage(e){
     switch (e.target.name){
@@ -42,6 +41,18 @@ function updateHomepage(e){
             break;
         case 'interval':
             browser.runtime.sendMessage({maxInterval:e.target.value});
+            break;
+        case 'anchor':
+            browser.storage.local.set({anchor:e.target.value});
+            reloadTabs();
+            break;
+        case 'repeat':
+            browser.storage.local.set({canRepeat:e.target.checked});
+            reloadTabs();
+            break;
+        case 'bgColor':
+            browser.storage.local.set({bgColor:e.target.value});
+            reloadTabs();
             break;
         default:
             setFileBlobs(e);
@@ -122,15 +133,27 @@ async function reloadTabs(){
 * Warning: Late Updating
 * */
 async function loadStats(){
-    browser.storage.local.get(["themes","doc","css","images","soundFX"])
+    browser.storage.local.get(["themes","doc","css","images","soundFX","bgColor","bgImage","anchor","canRepeat"])
         .then((storage)=>{
             const dataTag = document.querySelector("#data");
             let dataTxt = "";
             for(const [prop,map] of Object.entries(storage)){
-                if(prop === "themes"){
-                    dataTxt += `${prop}: ${map.get("names").length} `;
-                }else{
-                    dataTxt += `${prop}: ${map.get("files").length} `;
+                switch(prop){
+                    case 'themes':
+                        dataTxt += `${prop}: ${map.get("names").length}|`;
+                        break;
+                    case 'bgColor':
+                        dataTxt += `${prop}: ${map}|`;
+                        break;
+                    case 'anchor':
+                        dataTxt += `${prop}: ${map}|`;
+                        break;
+                    case 'canRepeat':
+                        dataTxt += `${prop}: ${map}|`;
+                        break;
+                    default:
+                        dataTxt += `${prop}: ${map.get("files").length}|`;
+                        break;
                 }
             }
             const txtNode = document.createTextNode(dataTxt);
@@ -140,7 +163,7 @@ async function loadStats(){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["currentTheme","onTabClose","maxInterval"])
+    browser.storage.local.get(["currentTheme","onTabClose","maxInterval","canRepeat","anchor","bgColor"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.currentTheme){
@@ -149,9 +172,19 @@ function initOptions(){
             if(storage.maxInterval){
                 document.querySelector("#interval").value = storage.maxInterval;
             }
-            if(storage.onTabClose){
-                document.querySelector("#stop").checked = storage.onTabClose;
+            if(storage.anchor){
+                const anchorTypes = document.querySelectorAll("input[name='anchor']");
+                for(const anchor of anchorTypes){
+                    if(anchor.value === storage.anchor){
+                        anchor.checked = true;
+                    }
+                }
             }
+            if(storage.bgColor){
+                document.querySelector("#bgColor").value = storage.bgColor;
+            }
+            document.querySelector("#stop").checked = !!storage.onTabClose;
+            document.querySelector("#repeat").checked = !!storage.canRepeat;
             loadStats();
         });
 }
@@ -165,8 +198,15 @@ document.querySelector("#images").addEventListener('change',updateHomepage,true)
 document.querySelector("#soundFX").addEventListener('change',updateHomepage,true);
 document.querySelector("#interval").addEventListener('input',updateHomepage,true);
 document.querySelector("#stop").addEventListener('change',updateHomepage,true);
+document.querySelector("#bgImage").addEventListener('change',updateHomepage,true);
+document.querySelector("#repeat").addEventListener('change',updateHomepage,true);
+document.querySelector("#bgColor").addEventListener('change',updateHomepage,true);
 const clearBtns = document.querySelectorAll("button[name='clear']");
 for(const btn of clearBtns){
     btn.addEventListener('click',resetFile,true);
+}
+const anchorTypes = document.querySelectorAll("input[name='anchor']");
+for(const anchor of anchorTypes){
+    anchor.addEventListener('change',updateHomepage,true);
 }
 

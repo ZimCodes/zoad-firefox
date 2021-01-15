@@ -10,6 +10,9 @@ function applySettings(){
             if(storage.css){
                 loadCSS(storage.css);
             }
+            if(storage.bgImage || storage.bgColor){
+                loadBackground(storage.bgImage,storage.anchor,storage.canRepeat,storage.bgColor);
+            }
            removeDuplicates();
        });
 }
@@ -24,8 +27,31 @@ function loadCSS(cssMap){
         styleTag.append(txt);
     }
 }
+function loadBackground(bgMap,anchor,repeat,color){
+    const styleTag = document.querySelector("style");
+    const backgroundAnchor = anchor ? anchor : 'cover';
+    const backgroundRepeat = repeat ? 'repeat' : 'no-repeat';
+    const backgroundColor = color ? color : '#ffffff';
+    let style = "body:before {\n" +
+        "\tcontent: \"\";\n" +
+        "\tz-index: -1;\n" +
+        "\tposition: fixed;\n" +
+        "\ttop: 0;\n" +
+        "\tleft: 0;\n" +
+        `\tbackground-color: ${backgroundColor};\n` +
+        `\tbackground-repeat: ${backgroundRepeat};\n` +
+        `\tbackground-size: ${backgroundAnchor};\n` +
+        "\twidth: 100vw;\n" +
+        "\theight: 100vh;\n";
+    if(bgMap){
+        style += `\tbackground-image:url("${bgMap.get("urls")[0]}");\n`
+    }
+    style += "}";
+    const styleNode = document.createTextNode(style);
+    styleTag.append(styleNode);
+}
 /*Removes duplicate <head> tags*/
-async function removeDuplicates(){
+function removeDuplicates(){
     const headTags = document.querySelectorAll("head");
     if(headTags.length > 1){
         for(const tag of headTags){

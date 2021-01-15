@@ -35,8 +35,41 @@
 				<label for="images">Images:</label>
 				<input id="images" class="file" name="images" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp" multiple/>
 				<button name="clear" type="button" value="images">Clear</button>
-				<p><em>*The image show as the background.</em></p>
+				<p><em>*The images to load. Use if CSS file(s) contains <code>url()</code> tag(s).</em></p>
 			</section>
+			<fieldset>
+				<legend>Background Configurations</legend>
+				<section>
+					<label for="bgImage">Background Image:</label>
+					<input id="bgImage" class="file" name="bgImage" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp"/>
+					<button name="clear" type="button" value="bgImage">Clear</button>
+					<p><em>*The image to show as the background.</em></p>
+				</section>
+				<section>
+					<div>
+						<label for="cover">Cover:</label>
+						<input id="cover" name="anchor" type="radio" value="cover"/>
+					</div>
+					<div>
+						<label for="contain">Contain:</label>
+						<input id="contain" name="anchor" type="radio" value="contain"/>
+					</div>
+					<div>
+						<label for="auto">Auto:</label>
+						<input id="auto" name="anchor" type="radio" value="auto"/>
+					</div>
+				</section>
+				<section class="space">
+					<label for="repeat">Can Repeat?:</label>
+					<input id="repeat" name="repeat" type="checkbox"/>
+				</section>
+				<section>
+					<label for="bgColor">Color:</label>
+					<input id="bgColor" name="bgColor" type="color"/>
+					<p><em>*Set the background color.</em></p>
+				</section>
+			</fieldset>
+
 			<fieldset>
 				<legend>Sound Configurations</legend>
 				<section>
