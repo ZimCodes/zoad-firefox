@@ -162,7 +162,7 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","soundFX","onTabClose"])
+	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
