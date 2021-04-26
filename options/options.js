@@ -15,6 +15,7 @@ function updateHomepage(e){
                                         newMap.get("names").push(file.name);
                                         newMap.get("json").push(JSON.parse(content));
                                         browser.storage.local.set({themes:newMap});
+                                        setTheme(newMap.get("json")[newMap.get("json").length-1]);
                                     });
                             }else{
                                 //Replace File with same name with new one
@@ -23,6 +24,7 @@ function updateHomepage(e){
                                     newMap.get("names").splice(fileIndex,1,file.name);
                                     newMap.get("json").splice(fileIndex,1,JSON.parse(content));
                                     browser.storage.local.set({themes:newMap});
+                                    setTheme(newMap.get("json")[fileIndex]);
                                 });
                             }
                         }
