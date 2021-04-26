@@ -47,7 +47,11 @@ function initOptions(){
             }
         });
 }
+function goToSettings(e){
+    browser.runtime.openOptionsPage();
+}
 /*Initialization*/
 initOptions();
 /*Event Listeners*/
 document.querySelector("#themes").addEventListener('change',themeChoice,true);
+document.querySelector("#settings").addEventListener('click',goToSettings,true);

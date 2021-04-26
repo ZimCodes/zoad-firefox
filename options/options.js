@@ -16,6 +16,14 @@ function updateHomepage(e){
                                         newMap.get("json").push(JSON.parse(content));
                                         browser.storage.local.set({themes:newMap});
                                     });
+                            }else{
+                                //Replace File with same name with new one
+                                file.text().then((content)=>{
+                                    let fileIndex = newMap.get("names").findIndex((name)=> name === file.name);
+                                    newMap.get("names").splice(fileIndex,1,file.name);
+                                    newMap.get("json").splice(fileIndex,1,JSON.parse(content));
+                                    browser.storage.local.set({themes:newMap});
+                                });
                             }
                         }
                     }else{

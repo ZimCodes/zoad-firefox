@@ -12,10 +12,37 @@ h1 {
 }
 option {
     color: saddlebrown;
+    border-radius: 50px;
+    border:2pt solid #000;
 }
 select {
     display: block;
     margin: 1em auto;
     width: calc(140px + 10vw);
     font-size: 12px;
+    border-radius: 50px;
+}
+section{
+    color:lightgreen;
+    display:flex;
+    justify-content: center;
+}
+@keyframes rotation {
+    0%{transform: rotateZ(0deg);-webkit-transform: rotateZ(0deg);}
+    25%{transform: rotateZ(90deg);-webkit-transform: rotateZ(90deg);}
+    50%{transform: rotateZ(180deg);-webkit-transform: rotateZ(180deg);}
+    75%{transform: rotateZ(270deg);-webkit-transform: rotateZ(270deg);}
+    100%{transform: rotateZ(360deg);-webkit-transform: rotateZ(360deg);}
+}
+#settings{
+    position:relative;
+    top:10px;
+    left:18px;
+    -webkit-animation: rotation 5s linear infinite;
+    -moz-animation: rotation 5s linear infinite;
+    animation: rotation 5s linear infinite;
+    cursor:pointer;
+}
+#settings:hover{
+    opacity: 0.7;
 }
