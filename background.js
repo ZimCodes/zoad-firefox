@@ -171,6 +171,7 @@ function initContent(){
 					refreshBlobs(prop,value,storage);
 				}
 			}
+			reloadTabs();
 		});
 }
 /*Refresh the file blobs and their respective URLs*/
