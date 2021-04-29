@@ -162,7 +162,7 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage"])
+	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage","currentTheme"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
@@ -171,7 +171,12 @@ function initContent(){
 					refreshBlobs(prop,value,storage);
 				}
 			}
+			//Reapply refreshed blobs on startup
 			reloadTabs();
+			//Reapply current theme
+			setTheme(storage.currentTheme);
+			//Play Sound
+			playSound();
 		});
 }
 /*Refresh the file blobs and their respective URLs*/
