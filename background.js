@@ -162,7 +162,7 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage","currentTheme"])
+	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
@@ -172,8 +172,18 @@ function initContent(){
 				}
 			}
 			reloadTabs();
-			setTheme(storage.currentTheme);
 		});
+}
+/*Initialize current custom theme*/
+function initTheme(){
+	browser.storage.local.get(["currentTheme"]).then((storage)=>{
+		setTheme(storage.currentTheme);
+	});
+}
+/*Initialize Extension*/
+function initZoad(){
+	initTheme();
+	initContent();
 }
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
@@ -278,7 +288,7 @@ function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 /*Initialize Functions*/
-initContent();
+initZoad();
 /*---Event Listeners---*/
 browser.runtime.onMessage.addListener(updateStorage);
 browser.tabs.onCreated.addListener(playSound);
