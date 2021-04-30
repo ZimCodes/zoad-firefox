@@ -162,7 +162,7 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage"])
+	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage","currentTheme"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
@@ -172,6 +172,7 @@ function initContent(){
 				}
 			}
 			reloadTabs();
+			setTheme(storage.currentTheme);
 		});
 }
 /*Refresh the file blobs and their respective URLs*/
@@ -201,6 +202,13 @@ function reloadTabs(){
 				browser.tabs.reload(tab.id);
 			}
 		});
+}
+/*Apply the theme for the browser window*/
+function setTheme(json){
+	if(json === undefined) return;
+	browser.theme.update(
+		json
+	)
 }
 /*EVENT: Play the sound effect when a new tab has been created*/
 function playSound(tab){

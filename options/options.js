@@ -72,6 +72,7 @@ function updateHomepage(e){
 }
 /*Apply the theme for the browser window*/
 function setTheme(json){
+    if(json === undefined) return;
     browser.theme.update(
         json
     )
