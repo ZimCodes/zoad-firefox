@@ -160,6 +160,13 @@ function cleanupURLs(map){
 		}
 	}
 }
+/*Set the browser theme*/
+function setTheme(json){
+	if(!json) return;
+	browser.theme.update(
+		json
+	);
+}
 /*Initialize file blobs & event listeners*/
 function initContent(){
 	browser.storage.local.get(["css","images","soundFX","onTabClose","bgImage","currentTheme"])
