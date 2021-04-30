@@ -178,12 +178,12 @@ function initContent(){
 					refreshBlobs(prop,value,storage);
 				}
 			}
-			//Reapply refreshed blobs on startup
-			reloadTabs();
 			//Reapply current theme
 			setTheme(storage.currentTheme);
 			//Play Sound
 			playSound();
+			//Reapply refreshed blobs on startup
+			reloadTabs();
 		});
 }
 /*Refresh the file blobs and their respective URLs*/
