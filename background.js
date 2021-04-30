@@ -171,8 +171,7 @@ function initContent(){
 					refreshBlobs(prop,value,storage);
 				}
 			}
-			//Reapply refreshed blobs on startup
-			reloadTabs();
+
 		});
 }
 /*Initialize current custom theme*/
@@ -185,6 +184,8 @@ function initTheme(){
 function initZoad(){
 	initTheme();
 	initContent();
+	//Reapply refreshed blobs on startup
+	reloadTabs();
 }
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
