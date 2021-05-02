@@ -64,11 +64,24 @@ function updateHomepage(e){
             browser.storage.local.set({bgColor:e.target.value});
             reloadTabs();
             break;
+        case 'volume':
+            browser.storage.local.set({volume:Number(e.target.value)})
         default:
             setFileBlobs(e);
             break;
     }
     loadStats();
+}
+/*Update the current volume*/
+function updateVolume(e){
+    displayVolume();
+    updateHomepage(e);
+}
+/*Display the current volume*/
+function displayVolume(){
+    const volumeOutput = document.querySelector("output[for='volume']");
+    const volumeNum = Number(document.querySelector("#volume").value);
+    volumeOutput.value = Math.floor(volumeNum * 100) + "%";
 }
 /*Apply the theme for the browser window*/
 function setTheme(json){
@@ -174,7 +187,7 @@ async function loadStats(){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["currentTheme","onTabClose","maxInterval","canRepeat","anchor","bgColor"])
+    browser.storage.local.get(["currentTheme","onTabClose","maxInterval","canRepeat","anchor","bgColor","volume"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.currentTheme){
@@ -194,6 +207,10 @@ function initOptions(){
             if(storage.bgColor){
                 document.querySelector("#bgColor").value = storage.bgColor;
             }
+            if(storage.volume) {
+                document.querySelector("#volume").value = storage.volume;
+            }
+            displayVolume();
             document.querySelector("#stop").checked = !!storage.onTabClose;
             document.querySelector("#repeat").checked = !!storage.canRepeat;
             loadStats();
@@ -212,6 +229,7 @@ document.querySelector("#stop").addEventListener('change',updateHomepage,true);
 document.querySelector("#bgImage").addEventListener('change',updateHomepage,true);
 document.querySelector("#repeat").addEventListener('change',updateHomepage,true);
 document.querySelector("#bgColor").addEventListener('change',updateHomepage,true);
+document.querySelector("#volume").addEventListener('change',updateVolume,true);
 const clearBtns = document.querySelectorAll("button[name='clear']");
 for(const btn of clearBtns){
     btn.addEventListener('click',resetFile,true);

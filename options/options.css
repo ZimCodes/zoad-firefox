@@ -43,3 +43,7 @@ p{
 h1{
     text-decoration:underline;
 }
+/*Volume Control*/
+output[for="volume"]{
+    font-weight: bold;
+}

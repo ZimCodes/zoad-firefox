@@ -79,6 +79,12 @@
 					<p><em>*The sound effects to randomly play when opening a new tab.</em></p>
 				</section>
 				<section>
+					<label for="volume">Volume:</label>
+					<input id="volume" name="volume" type="range" min="0.0" max="1.0" step="any" value="1.0">
+					<output for="volume" name="volume"></output>
+					<p><em>*Master volume for sound effects.</em></p>
+				</section>
+				<section>
 					<label for="interval">Interval:</label>
 					<input id="interval" class="interval" name="interval" min="0" size="3" type="number">
 					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) new tabs.</em></p>

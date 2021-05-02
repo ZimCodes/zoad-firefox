@@ -224,7 +224,7 @@ function setTheme(json){
 }
 /*EVENT: Play the sound effect when a new tab has been created*/
 function playSound(tab){
-	browser.storage.local.get(["soundFX","maxInterval"])
+	browser.storage.local.get(["soundFX","maxInterval","volume"])
 		.then((storage)=>{
 			curInterval += 1;
 			stopSound();
@@ -235,6 +235,7 @@ function playSound(tab){
 					const sfxMap = storage.soundFX;
 					const audioTag = document.createElement("audio");
 					audioTag.src = getSoundEffect(sfxMap);
+					audioTag.volume = storage.volume;
 					audioTag.setAttribute("autoplay","true");
 					document.body.append(audioTag);
 					audioTag.addEventListener('ended',endOfSound,true);
