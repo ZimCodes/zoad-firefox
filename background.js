@@ -290,8 +290,21 @@ function getRandom(min, max) {
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
+/*This is a fix. When user opens a link from an app, the browser opens and attempts to navigate to the link.
+* Instead of heading to the link, the user is redirected to a blank page (about:blank).
+* This function  takes the user back to their Zoad homepage*/
+function navigateHome(){
+	browser.tabs.query({url:"about:blank"}).then((tabs)=>{
+		browser.tabs.update(
+			tabs[0].id,
+			{url: browser.runtime.getURL("homepage/index.html") }
+		);
+	});
+}
 /*Initialize Functions*/
 initZoad();
 /*---Event Listeners---*/
 browser.runtime.onMessage.addListener(updateStorage);
 browser.tabs.onCreated.addListener(playSound);
+/*Fixes to a problem*/
+setTimeout(navigateHome,3000);
