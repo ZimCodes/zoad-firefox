@@ -307,4 +307,4 @@ initZoad();
 browser.runtime.onMessage.addListener(updateStorage);
 browser.tabs.onCreated.addListener(playSound);
 /*Fixes to a problem*/
-setTimeout(navigateHome,2000);
+setTimeout(navigateHome,1800);
