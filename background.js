@@ -196,6 +196,12 @@ function refreshBlobs(prop,map,storage){
 		}
 		for(const file of map.get("files")){
 			newURLs.push(URL.createObjectURL(file));
+			// Adds more clean file urls to the bgimage
+			if(prop === "bgImage"){
+				for(let i = 0; i < 4;i++){
+					newURLs.push(URL.createObjectURL(file));
+				}
+			}
 		}
 		map.set("urls",newURLs);
 		browser.storage.local.set({[prop]:map});

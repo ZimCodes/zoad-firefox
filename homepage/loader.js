@@ -44,11 +44,19 @@ function loadBackground(bgMap,anchor,repeat,color){
         "\twidth: 100vw;\n" +
         "\theight: 100vh;\n";
     if(bgMap){
-        style += `\tbackground-image:url("${bgMap.get("urls")[0]}");\n`
+        let urlAmount = bgMap.get("urls").length;
+        let urlChoice = getRandom(0,urlAmount);
+        style += `\tbackground-image:url("${bgMap.get("urls")[urlChoice]}");\n`
     }
     style += "}";
     const styleNode = document.createTextNode(style);
     styleTag.append(styleNode);
+}
+/*Get random integer (exclusive)*/
+function getRandom(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 /*Removes duplicate <head> tags*/
 function removeDuplicates(){
