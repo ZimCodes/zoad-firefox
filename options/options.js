@@ -49,8 +49,11 @@ function updateHomepage(e){
         case 'stop':
             browser.runtime.sendMessage({stop:e.target.checked});
             break;
-        case 'interval':
-            browser.runtime.sendMessage({maxInterval:e.target.value});
+        case 'openInterval':
+            browser.runtime.sendMessage({maxOpenInterval:e.target.value});
+            break;
+        case 'closeInterval':
+            browser.runtime.sendMessage({maxCloseInterval:e.target.value});
             break;
         case 'anchor':
             browser.storage.local.set({anchor:e.target.value});
@@ -138,7 +141,7 @@ async function resetFile(e){
                             URL.revokeObjectURL(url);
                         }
                         browser.storage.local.set({[e.target.value]: undefined});
-                        if(e.target.value === "soundFX" || e.target.value === "images"){
+                        if(e.target.value.endsWith("FX") || e.target.value === "images"){
                             browser.runtime.sendMessage({[e.target.value]: undefined});
                         }
                     }
@@ -163,7 +166,7 @@ async function reloadTabs(){
 * Warning: Late Updating
 * */
 async function loadStats(){
-    browser.storage.local.get(["themes","doc","css","images","soundFX","bgColor","bgImage","anchor","canRepeat"])
+    browser.storage.local.get(["themes","doc","css","images","openFX","closeFX","bgColor","bgImage","anchor","canRepeat"])
         .then((storage)=>{
             const dataTag = document.querySelector("#data");
             let dataTxt = "";
@@ -193,14 +196,17 @@ async function loadStats(){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["currentTheme","onTabClose","maxInterval","canRepeat","anchor","bgColor","volume"])
+    browser.storage.local.get(["currentTheme","onTabClose","maxOpenInterval","maxCloseInterval","canRepeat","anchor","bgColor","volume"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.currentTheme){
                 setTheme(storage.currentTheme);
             }
-            if(storage.maxInterval){
-                document.querySelector("#interval").value = storage.maxInterval;
+            if(storage.maxOpenInterval){
+                document.querySelector("#openInterval").value = storage.maxOpenInterval;
+            }
+            if(storage.maxCloseInterval){
+                document.querySelector("#closeInterval").value = storage.maxCloseInterval;
             }
             if(storage.anchor){
                 const anchorTypes = document.querySelectorAll("input[name='anchor']");
@@ -229,8 +235,10 @@ document.querySelector("#themes").addEventListener('change',updateHomepage,true)
 document.querySelector("#doc").addEventListener('change',updateHomepage,true);
 document.querySelector("#css").addEventListener('change',updateHomepage,true);
 document.querySelector("#images").addEventListener('change',updateHomepage,true);
-document.querySelector("#soundFX").addEventListener('change',updateHomepage,true);
-document.querySelector("#interval").addEventListener('input',updateHomepage,true);
+document.querySelector("#openFX").addEventListener('change',updateHomepage,true);
+document.querySelector("#closeFX").addEventListener('change',updateHomepage,true);
+document.querySelector("#openInterval").addEventListener('input',updateHomepage,true);
+document.querySelector("#closeInterval").addEventListener('input',updateHomepage,true);
 document.querySelector("#stop").addEventListener('change',updateHomepage,true);
 document.querySelector("#bgImage").addEventListener('change',updateHomepage,true);
 document.querySelector("#repeat").addEventListener('change',updateHomepage,true);

@@ -73,10 +73,16 @@
 			<fieldset>
 				<legend>Sound Configurations</legend>
 				<section>
-					<label for="soundFX">Sound Effects:</label>
-					<input id="soundFX" class="file" name="soundFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
-					<button name="clear" type="button" value="soundFX">Clear</button>
+					<label for="openFX">Opening SFX:</label>
+					<input id="openFX" class="file" name="openFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
+					<button name="clear" type="button" value="openFX">Clear</button>
 					<p><em>*The sound effects to randomly play when opening a new tab.</em></p>
+				</section>
+				<section>
+					<label for="closeFX">Closing SFX:</label>
+					<input id="closeFX" class="file" name="closeFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
+					<button name="clear" type="button" value="closeFX">Clear</button>
+					<p><em>*The sound effects to randomly play when closing a tab.</em></p>
 				</section>
 				<section>
 					<label for="volume">Volume:</label>
@@ -85,14 +91,19 @@
 					<p><em>*Master volume for sound effects.</em></p>
 				</section>
 				<section>
-					<label for="interval">Interval:</label>
-					<input id="interval" class="interval" name="interval" min="0" size="3" type="number">
-					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) new tabs.</em></p>
+					<label for="openInterval">Open Interval:</label>
+					<input id="openInterval" class="interval" name="openInterval" min="0" size="3" type="number">
+					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) <strong>new tab</strong>.</em></p>
+				</section>
+				<section>
+					<label for="closeInterval">Close Interval:</label>
+					<input id="closeInterval" class="interval" name="closeInterval" min="0" size="3" type="number">
+					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) <strong>closing tab</strong>.</em></p>
 				</section>
 				<section>
 					<label for="stop">Tab Close Stop:</label>
 					<input id="stop" class="interval" name="stop" type="checkbox">
-					<p><em>*Stop Sound Effect when a tab is closed tab.</em></p>
+					<p><em>*Stop Sound Effect when a tab is closed tab. <strong>Deactivates when closing sfx is present.</strong></em></p>
 				</section>
 			</fieldset>
 
