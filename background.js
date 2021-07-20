@@ -174,7 +174,7 @@ function initContent(){
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
 					setRemoveSound(value,storage.closeFX);
-				}else if(prop === "soundFX" && !storage.soundFX){
+				}else if(prop === "soundFX" && storage.soundFX){
 					/*Cleans up old versions 1.X.X placement of sound fx*/
 					browser.storage.local.remove("soundFX");
 				}else{
