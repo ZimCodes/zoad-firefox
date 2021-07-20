@@ -174,6 +174,9 @@ function initContent(){
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
 					setRemoveSound(value,storage.closeFX);
+				}else if(prop === "soundFX"){
+					/*Clean up old versions 1.X.X placement of sound fx*/
+					browser.storage.local.remove("soundFX");
 				}else{
 					refreshBlobs(prop,value,storage);
 				}
@@ -189,11 +192,13 @@ function initTheme(){
 }
 /*Initialize Extension*/
 function initZoad(){
+
 	initTheme();
 	initContent();
 	//Reapply refreshed blobs on startup
 	reloadTabs();
 }
+
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
 	if(map){
@@ -277,6 +282,7 @@ function playSound(tab){
 			}
 		});
 }
+/*Set the audio tag to play a random sound effect*/
 function setAudioTag(volume,sfxMap){
 	const audioTag = document.createElement("audio");
 	audioTag.src = getSoundEffect(sfxMap);
