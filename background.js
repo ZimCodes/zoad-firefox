@@ -169,13 +169,13 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","openFX","closeFX","onTabClose","bgImage","currentTheme"])
+	browser.storage.local.get(["css","images","openFX","closeFX","soundFX","onTabClose","bgImage","currentTheme"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
 					setRemoveSound(value,storage.closeFX);
-				}else if(prop === "soundFX"){
-					/*Clean up old versions 1.X.X placement of sound fx*/
+				}else if(prop === "soundFX" && !storage.soundFX){
+					/*Cleans up old versions 1.X.X placement of sound fx*/
 					browser.storage.local.remove("soundFX");
 				}else{
 					refreshBlobs(prop,value,storage);
