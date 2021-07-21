@@ -45,7 +45,7 @@ function loadBackground(bgMap,anchor,repeat,color){
         "\theight: 100vh;\n";
     if(bgMap){
         let urlAmount = bgMap.get("urls").length;
-        let urlChoice = getRandom(1,urlAmount);
+        let urlChoice = getRandom(0,urlAmount);
         style += `\tbackground-image:url("${bgMap.get("urls")[urlChoice]}");\n`
     }
     style += "}";

@@ -181,7 +181,6 @@ function initContent(){
 					refreshBlobs(prop,value,storage);
 				}
 			}
-
 		});
 }
 /*Initialize current custom theme*/
@@ -198,7 +197,6 @@ function initZoad(){
 	//Reapply refreshed blobs on startup
 	reloadTabs();
 }
-
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
 	if(map){
@@ -336,6 +334,7 @@ function getRandom(min, max) {
 * This function  takes the user back to their Zoad homepage*/
 function navigateHome(){
 	browser.tabs.query({url:"about:blank"}).then((tabs)=>{
+		if(tabs.length === 0) return;
 		browser.tabs.update(
 			tabs[0].id,
 			{url: browser.runtime.getURL("homepage/index.html") }
