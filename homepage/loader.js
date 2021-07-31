@@ -21,6 +21,7 @@ function applySettings(){
 function getNewBGImageBlob(bgMap){
     if(bgMap){
         const imageFile = bgMap.get("files")[0];
+        bgMap = getCleanBGMap(bgMap);
         if(bgMap.get("urls").length > 0){
             let blobToDelete = bgMap.get("urls").pop();
             URL.revokeObjectURL(blobToDelete);
@@ -33,6 +34,13 @@ function getNewBGImageBlob(bgMap){
         return newImageBlob;
     }
     return "";
+}
+/*Cleans up versions 2.0.X method of loading background images*/
+function getCleanBGMap(bgMap){
+    if(bgMap.get("urls").length > 1){
+        bgMap.set("urls",[]);
+    }
+    return bgMap;
 }
 function loadHTML(docMap){
     const bodyTag = document.body;
