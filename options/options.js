@@ -113,12 +113,6 @@ function getFileBlobs(storageName,filelist){
                     lastModified:file.lastModified
                 });
             saveFiles.push(saveFile);
-            // Adds more clean file urls to the bgimage
-            if(storageName === "bgImage"){
-                for(let i = 0; i < 4;i++){
-                    saveURLs.push(URL.createObjectURL(saveFile));
-                }
-            }
             saveURLs.push(URL.createObjectURL(saveFile));
         }
         fileMap.set("urls",saveURLs);

@@ -33,7 +33,7 @@
 			</section>
 			<section>
 				<label for="images">Images:</label>
-				<input id="images" class="file" name="images" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp" multiple/>
+				<input id="images" class="file" name="images" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp,image/bmp" multiple/>
 				<button name="clear" type="button" value="images">Clear</button>
 				<p><em>*The images to load. Use if CSS file(s) contains <code>url()</code> tag(s).</em></p>
 			</section>
@@ -41,7 +41,7 @@
 				<legend>Background Configurations</legend>
 				<section>
 					<label for="bgImage">Background Image:</label>
-					<input id="bgImage" class="file" name="bgImage" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp"/>
+					<input id="bgImage" class="file" name="bgImage" type="file" accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp,image/bmp"/>
 					<button name="clear" type="button" value="bgImage">Clear</button>
 					<p><em>*The image to show as the background.</em></p>
 				</section>
@@ -92,12 +92,12 @@
 				</section>
 				<section>
 					<label for="openInterval">Open Interval:</label>
-					<input id="openInterval" class="interval" name="openInterval" min="0" size="3" type="number">
+					<input id="openInterval" class="interval" name="openInterval" value="0" min="0" size="3" type="number">
 					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) <strong>new tab</strong>.</em></p>
 				</section>
 				<section>
 					<label for="closeInterval">Close Interval:</label>
-					<input id="closeInterval" class="interval" name="closeInterval" min="0" size="3" type="number">
+					<input id="closeInterval" class="interval" name="closeInterval" value="0" min="0" size="3" type="number">
 					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) <strong>closing tab</strong>.</em></p>
 				</section>
 				<section>

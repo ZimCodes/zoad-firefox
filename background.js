@@ -169,7 +169,7 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","openFX","closeFX","soundFX","onTabClose","bgImage","currentTheme"])
+	browser.storage.local.get(["css","images","openFX","closeFX","soundFX","onTabClose","currentTheme"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
@@ -206,12 +206,6 @@ function refreshBlobs(prop,map,storage){
 		}
 		for(const file of map.get("files")){
 			newURLs.push(URL.createObjectURL(file));
-			// Adds more clean file urls to the bgimage
-			if(prop === "bgImage"){
-				for(let i = 0; i < 4;i++){
-					newURLs.push(URL.createObjectURL(file));
-				}
-			}
 		}
 		map.set("urls",newURLs);
 		browser.storage.local.set({[prop]:map});
