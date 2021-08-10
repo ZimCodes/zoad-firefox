@@ -194,8 +194,6 @@ function initZoad(){
 
 	initTheme();
 	initContent();
-	//Reapply refreshed blobs on startup
-	reloadTabs();
 }
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
