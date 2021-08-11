@@ -76,13 +76,19 @@
 					<label for="openFX">Opening SFX:</label>
 					<input id="openFX" class="file" name="openFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
 					<button name="clear" type="button" value="openFX">Clear</button>
-					<p><em>*The sound effects to randomly play when opening a new tab.</em></p>
+					<p><em>*Sound effects to randomly play when opening a new tab.</em></p>
 				</section>
 				<section>
 					<label for="closeFX">Closing SFX:</label>
 					<input id="closeFX" class="file" name="closeFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
 					<button name="clear" type="button" value="closeFX">Clear</button>
-					<p><em>*The sound effects to randomly play when closing a tab.</em></p>
+					<p><em>*Sound effects to randomly play when closing a tab.</em></p>
+				</section>
+				<section>
+					<label for="windowFX">New Window SFX:</label>
+					<input id="windowFX" class="file" name="windowFX" type="file" accept="audio/aac,audio/ogg,audio/webm,audio/mp3,audio/mp4,audio/flac,audio/x-flac" multiple>
+					<button name="clear" type="button" value="windowFX">Clear</button>
+					<p><em>*Sound effects to randomly play when a new window is opened on the homepage.</em></p>
 				</section>
 				<section>
 					<label for="volume">Volume:</label>
@@ -99,11 +105,6 @@
 					<label for="closeInterval">Close Interval:</label>
 					<input id="closeInterval" class="interval" name="closeInterval" value="0" min="0" size="3" type="number">
 					<p><em>*Play a random sound effect every [<code>x * 0.5</code> to <code>x * 1.5</code>] (inclusive) <strong>closing tab</strong>.</em></p>
-				</section>
-				<section>
-					<label for="stop">Tab Close Stop:</label>
-					<input id="stop" class="interval" name="stop" type="checkbox">
-					<p><em>*Stop Sound Effect when a tab is closed tab. <strong>Deactivates when closing sfx is present.</strong></em></p>
 				</section>
 			</fieldset>
 

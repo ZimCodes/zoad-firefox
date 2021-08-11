@@ -26,11 +26,8 @@ function updateStorage(msg){
 						curOpenMaxInterval = msg[prop] === 0 ? 0 : getRandom(msg[prop] * 0.5, (msg[prop] * 1.5) + 1);
 					}
 					browser.storage.local.set({[prop]:msg[prop]});
-				}else if(prop.endsWith("FX") && !msg[prop]){
+				}else if(!prop.startsWith("window") && prop.endsWith("FX") && !msg[prop]){
 					playSound();
-				}else if(prop === "stop"){
-					browser.storage.local.set({onTabClose:msg[prop]});
-					setRemoveSound(msg[prop],storage.closeFX);
 				}else if(prop === "images" && !msg[prop]){
 					resetCSS(storage);
 				}
@@ -169,11 +166,13 @@ function cleanupURLs(map){
 }
 /*Initialize file blobs & event listeners*/
 function initContent(){
-	browser.storage.local.get(["css","images","openFX","closeFX","soundFX","onTabClose","currentTheme"])
+	browser.storage.local.get(["css","images","openFX","closeFX","soundFX",
+		"onTabClose","currentTheme"])
 		.then((storage)=>{
 			for(let [prop,value] of Object.entries(storage)){
 				if(prop === "onTabClose"){
-					setRemoveSound(value,storage.closeFX);
+					/*Removes/Cleans up onTabClose feature. 2.1.X and below*/
+					browser.storage.local.remove("onTabClose");
 				}else if(prop === "soundFX" && storage.soundFX){
 					/*Cleans up old versions 1.X.X placement of sound fx*/
 					browser.storage.local.remove("soundFX");
@@ -183,6 +182,7 @@ function initContent(){
 			}
 		});
 }
+
 /*Initialize current custom theme*/
 function initTheme(){
 	browser.storage.local.get(["currentTheme"]).then((storage)=>{
@@ -191,28 +191,39 @@ function initTheme(){
 }
 /*Initialize Extension*/
 function initZoad(){
-
 	initTheme();
 	initContent();
+	playWindowSFX()
+}
+/*Plays a sound effect whenever a new window is created*/
+function playWindowSFX(){
+	browser.storage.local.get(['windowFX','volume']).then((storage)=>{
+		if(!storage.windowFX) return;
+		const winFXObj = getNewBlobMap("windowFX",storage.windowFX);
+		setAudioTag(storage.volume,winFXObj.windowFX);
+		browser.storage.local.set(winFXObj);
+	});
 }
 /*Refresh the file blobs and their respective URLs*/
 function refreshBlobs(prop,map,storage){
 	if(map){
-		let newURLs = [];
-		for(const url of map.get("urls")){
-			URL.revokeObjectURL(url);
-		}
-		for(const file of map.get("files")){
-			newURLs.push(URL.createObjectURL(file));
-		}
-		map.set("urls",newURLs);
-		browser.storage.local.set({[prop]:map});
-
+		browser.storage.local.set(getNewBlobMap(prop,map));
 		if(prop === "images"){
 			/*Reapply new image locations to CSS files*/
-			parseCSS(map,"images",storage);
+			parseCSS(map,prop,storage);
 		}
 	}
+}
+function getNewBlobMap(prop,map){
+	let newURLs = [];
+	for(const url of map.get("urls")){
+		URL.revokeObjectURL(url);
+	}
+	for(const file of map.get("files")){
+		newURLs.push(URL.createObjectURL(file));
+	}
+	map.set("urls",newURLs);
+	return {[prop]:map};
 }
 /*Apply new setting changes to all Zoad Tabs*/
 function reloadTabs(){
@@ -230,7 +241,7 @@ function setTheme(json){
 		json
 	)
 }
-/*EVENT: Play the sound effect when a new tab has been created*/
+/*EVENT: Play the sound effect when a new tab has been created/removed*/
 function playSound(tab){
 	browser.storage.local.get(["openFX","closeFX","maxOpenInterval","maxCloseInterval","volume"])
 		.then((storage)=>{
@@ -281,19 +292,6 @@ function setAudioTag(volume,sfxMap){
 	document.body.append(audioTag);
 	audioTag.addEventListener('ended',endOfSound,true);
 }
-/*Set the Event listener for stopping the sound effect when a tab is closed
-* Deactivates if close sound effect has been assigned*/
-function setRemoveSound(onTabClose,closeFX){
-	if(onTabClose && !closeFX){
-		if(!browser.tabs.onRemoved.hasListener(stopSound)){
-			browser.tabs.onRemoved.addListener(stopSound);
-		}
-	}else{
-		if(browser.tabs.onRemoved.hasListener(stopSound)){
-			browser.tabs.onRemoved.removeListener(stopSound);
-		}
-	}
-}
 /*Cleans up the completed sound effect*/
 function endOfSound(e){
 	e.target.removeEventListener('ended',endOfSound,true);
@@ -321,23 +319,9 @@ function getRandom(min, max) {
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
-/*This is a fix. When user opens a link from an app, the browser opens and attempts to navigate to the link.
-* Instead of heading to the link, the user is redirected to a blank page (about:blank).
-* This function  takes the user back to their Zoad homepage*/
-function navigateHome(){
-	browser.tabs.query({url:"about:blank"}).then((tabs)=>{
-		if(tabs.length === 0) return;
-		browser.tabs.update(
-			tabs[0].id,
-			{url: browser.runtime.getURL("homepage/index.html") }
-		);
-	});
-}
 /*Initialize Functions*/
 initZoad();
 /*---Event Listeners---*/
 browser.runtime.onMessage.addListener(updateStorage);
 browser.tabs.onCreated.addListener(playSound);
 browser.tabs.onRemoved.addListener(playSound)
-/*Fixes to a problem*/
-setTimeout(navigateHome,1800);

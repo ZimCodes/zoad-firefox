@@ -46,9 +46,6 @@ function updateHomepage(e){
                     }
                 });
             break;
-        case 'stop':
-            browser.runtime.sendMessage({stop:e.target.checked});
-            break;
         case 'openInterval':
             browser.runtime.sendMessage({maxOpenInterval:e.target.value});
             break;
@@ -68,7 +65,8 @@ function updateHomepage(e){
             reloadTabs();
             break;
         case 'volume':
-            browser.storage.local.set({volume:Number(e.target.value)})
+            browser.storage.local.set({volume:Number(e.target.value)});
+            break;
         default:
             setFileBlobs(e);
             break;
@@ -160,7 +158,8 @@ async function reloadTabs(){
 * Warning: Late Updating
 * */
 async function loadStats(){
-    browser.storage.local.get(["themes","doc","css","images","openFX","closeFX","bgColor","bgImage","anchor","canRepeat"])
+    browser.storage.local.get(["themes","doc","css","images","openFX","closeFX","windowFX",
+        "bgColor","bgImage","anchor","canRepeat"])
         .then((storage)=>{
             const dataTag = document.querySelector("#data");
             let dataTxt = "";
@@ -190,7 +189,7 @@ async function loadStats(){
 }
 /*Initialize settings from the previous session*/
 function initOptions(){
-    browser.storage.local.get(["currentTheme","onTabClose","maxOpenInterval","maxCloseInterval","canRepeat","anchor","bgColor","volume"])
+    browser.storage.local.get(["currentTheme","maxOpenInterval","maxCloseInterval","canRepeat","anchor","bgColor","volume"])
         .then((storage)=>{
             //Reapply previous settings
             if(storage.currentTheme){
@@ -217,7 +216,6 @@ function initOptions(){
                 document.querySelector("#volume").value = storage.volume;
             }
             displayVolume();
-            document.querySelector("#stop").checked = !!storage.onTabClose;
             document.querySelector("#repeat").checked = !!storage.canRepeat;
             loadStats();
         });
@@ -231,9 +229,9 @@ document.querySelector("#css").addEventListener('change',updateHomepage,true);
 document.querySelector("#images").addEventListener('change',updateHomepage,true);
 document.querySelector("#openFX").addEventListener('change',updateHomepage,true);
 document.querySelector("#closeFX").addEventListener('change',updateHomepage,true);
+document.querySelector("#windowFX").addEventListener('change',updateHomepage,true);
 document.querySelector("#openInterval").addEventListener('input',updateHomepage,true);
 document.querySelector("#closeInterval").addEventListener('input',updateHomepage,true);
-document.querySelector("#stop").addEventListener('change',updateHomepage,true);
 document.querySelector("#bgImage").addEventListener('change',updateHomepage,true);
 document.querySelector("#repeat").addEventListener('change',updateHomepage,true);
 document.querySelector("#bgColor").addEventListener('change',updateHomepage,true);
