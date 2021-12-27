@@ -22,7 +22,7 @@
 	"browser_action": {
 		"browser_style": true,
 		"default_icon": "zoad-logo.svg",
-		"default_title": "Zoad themes",
+		"default_title": "Zoad: Custom Loader",
 		"default_popup": "popup/index.html"
 	},
 	"options_ui":{

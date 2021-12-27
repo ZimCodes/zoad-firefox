@@ -23,7 +23,7 @@ All themes added to the loader can be accessed through the popup menu.
 
 The popup menu shows all of your loaded themes conveniently in one place. You could use this menu to switch between any of your loaded themes.
 
-Need a theme? Check out this [alternative theme pack](https://github.com/ZimCodes/doki-theme-firefox/archive/refs/heads/alt-themes.zip) for the doki-theme-firefox edition. 
+Need a theme? Check out this [alternative theme pack](https://github.com/ZimCodes/doki-theme-web/archive/refs/heads/alt-themes.zip) for the doki-theme-firefox edition. 
 
 ### CSS
 
