@@ -40,7 +40,7 @@ Zoad supports [common audio formats](https://developer.mozilla.org/en-US/docs/We
 *Want to know more about the permissions? Take a look at the [PERMISSIONS](https://github.com/ZimCodes/zoad-firefox/blob/main/PERMISSION.md) file.
 
 ## Installation 
-Zoad is available for installation at [Mozilla's Addon Store](https://addons.mozilla.org/en-US/firefox/addon/zoad-custom-loader).
+Zoad is available for installation at [Mozilla's Addon Store](https://addons.mozilla.org/firefox/addon/zoad-custom-loader).
 
 ## License
 Zoad is licensed under the MIT License.
